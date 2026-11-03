@@ -9,9 +9,9 @@
 - Shell: bash
 - Docker: 29.9.2
 - Git: 2.53.0
-- 터미널 애플리케이션 이름(Windows Terminal 등 구체적 종류): **확인 필요** — 기존 기록에 명시되어 있지 않음
+- 터미널 애플리케이션: **Ubuntu 앱(Microsoft Store 배포판 전용 터미널)**
 
-> **환경 확정**: §5~§16의 실습 로그는 Windows 노트북에서 **Docker Desktop(WSL2 Integration)** 을 통해 Ubuntu WSL 배포판의 `docker` CLI로 재현한 결과다. WSL2를 활성화하고(`wsl --install`), Docker Desktop을 D드라이브에 설치한 뒤(`--installation-dir=D:\Docker --wsl-default-data-root=D:\DockerData`), Ubuntu 배포판을 기본값으로 지정(`wsl --set-default Ubuntu`)하고 Docker Desktop 설정에서 WSL Integration을 켜서 연동했다. 최초 README 작성 당시의 "Docker Engine - Community" 표기는 다른(클라우드) 환경에서의 기록이며, 본 재현 작업과는 별개 환경임을 밝혀둔다.
+> **환경 확정**: §6~§13의 재현 실습 로그는 Windows 노트북에서 **Docker Desktop(WSL2 Integration)** 을 통해 Ubuntu WSL 배포판의 `docker` CLI로 수행한 결과다. WSL2를 활성화하고(`wsl --install`), Docker Desktop을 D드라이브에 설치한 뒤(`--installation-dir=D:\Docker --wsl-default-data-root=D:\DockerData`), Ubuntu 배포판을 기본값으로 지정(`wsl --set-default Ubuntu`)하고 Docker Desktop 설정에서 WSL Integration을 켜서 연동했다. §5의 `docker info` 출력에서 `Operating System: Docker Desktop`, `Name: docker-desktop`으로 이 사실이 직접 확인된다. 최초 README의 "Docker Engine - Community" 표기는 다른(클라우드) 환경에서의 기록이며, 본 재현 작업과는 별개 환경이다.
 
 ## 3) 수행 체크리스트
 - [x] 터미널 기본 조작 (pwd / ls -la / cd / mkdir / cp / mv / cat / touch / rm)
@@ -39,12 +39,15 @@
 
 | 요구 항목 | 검증 명령 | 결과 위치 |
 |---|---|---|
+| 터미널 기본 조작 | `pwd`, `ls -la`, `cd`, `cp`, `mv`, `cat`, `touch`, `rm` | §6 |
+| 파일/디렉토리 권한 변경 | `chmod 600`/`700` 전/후 `ls -l` | §7 |
 | Docker 버전/데몬 점검 | `docker --version`, `docker info` | §5 |
 | 이미지 목록 확인 | `docker images` | §8 |
 | 컨테이너 목록/로그/리소스 | `docker ps -a`, `docker logs`, `docker stats` | §8 |
 | hello-world 실행 | `docker run hello-world` | §8 |
-| 커스텀 이미지 빌드/실행 | `docker build`, `docker run -d -p ...` | §9 |
-| 포트 매핑 접속 | 브라우저 `localhost:8090`, `localhost:8091` | `docs/port-8090.png`, `docs/port-8091.png` |
+| 커스텀 이미지 빌드 | `docker build` | §9 |
+| 커스텀 이미지 컨테이너 실행 | `docker run -d -p ...` | §10 |
+| 포트 매핑 접속 | 브라우저 `localhost:8090`, `localhost:8091` | §10, `docs/port-8090.png`, `docs/port-8091.png` |
 | 바인드 마운트 반영 | `localhost:8092` 변경 전/후 스크린샷 비교 | §11 |
 | 볼륨 영속성 | 컨테이너 재생성 후 `cat /data/hello.txt` | §12 |
 | Git 설정 | `git config --list` | §13 |
@@ -66,16 +69,27 @@ git version 2.53.0
 
 $ docker info
 Server:
- Containers: 2
- Images: 2
+ Containers: 8
+  Running: 4
+  Paused: 0
+  Stopped: 4
+ Images: 4
  Server Version: 29.9.2
  Storage Driver: overlayfs
- Operating System: Ubuntu 26.04.1 LTS
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 2
  Kernel Version: 6.18.54.1-microsoft-standard-WSL2
+ Operating System: Docker Desktop
+ OSType: linux
  Architecture: x86_64
- CPUs: 24
- Total Memory: 15.25GiB
+ CPUs: 8
+ Total Memory: 7.463GiB
+ Name: docker-desktop
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
 ```
+(위는 이 노트북에서 재실행한 결과이며, 길이가 긴 출력 중 핵심 라인만 발췌했다. `Operating System: Docker Desktop`, `Name: docker-desktop`을 통해 이 환경이 Docker Desktop(WSL Integration)임이 직접 확인된다.)
 
 ## 6) 터미널 기본 조작 로그
 
@@ -220,18 +234,17 @@ CONTAINER ID   IMAGE    COMMAND       CREATED         STATUS                    
 ### 8-5) Ubuntu 컨테이너 대화형 셸 진입
 
 ```bash
-$ docker run -it --name ubuntu-interactive ubuntu bash
-root@3685044b6bae:/# ls /
-root@3685044b6bae:/# echo hello-from-container
-root@3685044b6bae:/# exit
+$ docker run -it --name ubuntu-interactive-v2 ubuntu bash
+root@0e9b549be8ac:/# ls /
+bin   dev  home  lib64  mnt   proc  run   srv  tmp  var
+boot  etc  lib   media  opt   root  sbin  sys  usr
+root@0e9b549be8ac:/# echo hello-from-container
+hello-from-container
+root@0e9b549be8ac:/# exit
 exit
-
-$ docker ps -a
-CONTAINER ID   IMAGE    COMMAND   CREATED          STATUS                     NAMES
-3685044b6bae   ubuntu   "bash"    29 seconds ago   Exited (0) 4 seconds ago   ubuntu-interactive
 ```
 
-프롬프트가 `root@3685044b6bae:/#` 형태로 바뀐 것이 컨테이너 내부 대화형 셸에 실제로 진입했다는 증거다. `ls /`, `echo hello-from-container`는 셸 내부에서 직접 입력해 실행했으나, 그 두 명령의 구체적인 출력 내용 자체는 별도로 캡처해두지 못했다 — 이 부분은 추측해서 적지 않고 미기록으로 남긴다. `exit`로 셸을 나오자 주 프로세스(bash)가 함께 종료되어 컨테이너도 `Exited` 상태가 되었다.
+프롬프트가 `root@0e9b549be8ac:/#` 형태로 바뀐 것이 컨테이너 내부 대화형 셸에 실제로 진입했다는 증거이며, `ls /`와 `echo hello-from-container`의 실제 출력도 위와 같이 확인했다. `exit`로 셸을 나오자 주 프로세스(bash)가 함께 종료되어 컨테이너도 `Exited` 상태가 되었다.
 
 ### 8-6) 컨테이너 종료/유지 — exec 셸 종료 vs 주 프로세스 종료 비교
 
@@ -254,7 +267,7 @@ CONTAINER ID   IMAGE          COMMAND                   CREATED          STATUS 
 24f6b839c049   nginx:alpine   "/docker-entrypoint.…"    53 seconds ago   Exited (0) 5 seconds ago            lifecycle-test
 ```
 
-이번에는 주 프로세스를 직접 종료(`docker stop`)하자 컨테이너가 `Exited`로 바뀌었다. 두 결과를 비교하면, **`docker exec`로 실행한 추가 프로세스의 종료는 컨테이너 상태에 영향을 주지 않지만, 주 프로세스의 종료(또는 `docker stop`)는 컨테이너를 즉시 정지시킨다**는 차이가 명확히 드러난다.
+이번에는 주 프로세스를 직접 종료(`docker stop`)하자 컨테이너가 `Exited`로 바뀌었다. 두 결과를 비교하면, **`docker exec`로 실행한 추가 프로세스의 종료는 컨테이너 상태에 영향을 주지 않지만, 주 프로세스의 종료(또는 `docker stop`)는 컨테이너를 정지시킨다**는 차이가 명확히 드러난다. (`docker stop`은 컨테이너에 SIGTERM을 보내고 정해진 유예 시간 내에 종료되지 않으면 SIGKILL로 강제 종료하는 방식이라, "즉시" 멈추는 것은 아니다.)
 
 ## 9) 커스텀 웹서버 Dockerfile (기존 nginx 베이스 활용)
 
@@ -357,9 +370,9 @@ hi
 컨테이너 `vol-test`를 삭제한 뒤 새 컨테이너 `vol-test2`에 같은 볼륨 `mydata`를 연결했다. `/data/hello.txt` 내용이 그대로 유지되어 Docker 볼륨의 영속성을 이 노트북에서도 재확인했다.
 
 ### 12-1) 바인드 마운트 vs Docker 볼륨
-- **바인드 마운트**는 호스트의 특정 디렉토리를 컨테이너 내부 경로에 그대로 연결한다. 호스트 파일을 직접 수정하면 컨테이너 재시작 없이 즉시 반영됨을 §11에서 확인했다.
-- **Docker 볼륨**은 호스트 경로가 아니라 Docker가 자체 관리하는 저장 영역이다. 컨테이너를 삭제해도 볼륨 자체는 남아있어, 새 컨테이너에 같은 볼륨을 연결하면 데이터가 유지됨을 본 섹션에서 확인했다.
-- 핵심 차이: 바인드 마운트는 "호스트 파일 시스템과의 실시간 동기화"에, 볼륨은 "컨테이너 수명과 무관한 데이터 영속성"에 초점이 있다.
+- **바인드 마운트**는 **호스트의 특정 경로를 직접 지정**해서 컨테이너 내부 경로에 연결한다. 호스트 파일을 직접 수정하면 컨테이너 재시작 없이 즉시 반영됨을 §11에서 확인했다. 데이터의 실체가 호스트 파일 시스템 그 자체이므로, 컨테이너를 삭제해도 그 호스트 경로의 파일은 당연히 그대로 남는다.
+- **Docker 볼륨**은 호스트 경로를 사람이 직접 지정하지 않고, **Docker가 자체적으로 관리하는 저장 영역**에 데이터를 둔다. 컨테이너를 삭제해도 볼륨 자체는 Docker가 별도로 보관하고 있어, 새 컨테이너에 같은 볼륨을 연결하면 데이터가 유지됨을 본 섹션에서 확인했다.
+- 핵심 차이는 "삭제 후에도 데이터가 남는지" 여부가 아니라(둘 다 남는다), **데이터가 저장되는 위치를 사용자가 직접 지정하는가(바인드 마운트) 아니면 Docker가 관리하는가(볼륨)**에 있다. 바인드 마운트는 호스트와의 실시간 동기화·공유에 적합하고, 볼륨은 컨테이너 환경과 분리된 Docker 전용 데이터 저장에 적합하다.
 
 ## 13) Git 설정
 
@@ -390,12 +403,17 @@ core.logallrefupdates=true
 $ git remote -v
 origin  https://github.com/jinho1017-eng/codyssey-dev-workstation-E1-1.git (fetch)
 origin  https://github.com/jinho1017-eng/codyssey-dev-workstation-E1-1.git (push)
-
-$ git log --oneline
-9673306 (HEAD -> main, origin/main, origin/HEAD) Codyssey Gyeongnam Docker workstation setup
 ```
 
-로컬 `HEAD`와 `origin/main`, `origin/HEAD`가 모두 같은 커밋(`9673306`)을 가리키고 있어, 로컬 저장소와 GitHub 원격 저장소가 완전히 동기화된 상태임을 확인했다. (최초 `git remote add origin`·`git push` 작업 자체는 이 저장소가 생성된 시점에 수행된 것으로, 그 시점의 터미널 출력 로그는 별도로 보존되어 있지 않다 — 위 동기화 확인 결과로 대체한다.)
+`git log --oneline`만으로는 로컬에 저장된 원격 추적 정보(`origin/main`)를 보는 것이라 GitHub의 실시간 상태를 보장하지 않는다. 그래서 `git fetch`로 원격의 최신 상태를 직접 받아온 뒤 비교했다.
+
+```bash
+$ git fetch origin
+$ git status -sb
+## main...origin/main
+```
+
+`git fetch` 이후에도 `main...origin/main` 사이에 ahead/behind 표시나 변경 파일 목록이 전혀 없다는 것은, 로컬 `main` 브랜치와 GitHub의 `origin/main`이 실제로 같은 상태이고 커밋되지 않은 변경사항도 없다는 뜻이다. 이 결과로 로컬 저장소와 GitHub 원격 저장소의 동기화를 확인했다. (최초 `git remote add origin`·`git push` 작업 자체는 이 저장소가 생성된 시점에 수행된 것으로, 그 시점의 터미널 출력 로그는 별도로 보존되어 있지 않다.)
 
 ### 13-2) GitHub / VSCode 연동 증거
 
@@ -480,3 +498,4 @@ curl http://localhost:8090
 - 모든 작업은 WSL2(Ubuntu) 터미널 기반 CLI로 수행했다.
 - 브라우저 접속 스크린샷과 VSCode-GitHub 연동 스크린샷은 `docs/` 폴더에 포함되어 있다.
 - 보너스 과제(Docker Compose 등)는 본 제출 범위에 포함하지 않았다.
+- `site/index.html`에서 바인드 마운트 테스트로 추가된 `<p>` 태그들이 `</html>` 뒤에 위치해 있던 구조적 오류를 `<body>` 내부로 옮겨 수정했다. 브라우저는 원래도 자동으로 보정해서 보여줬기 때문에 §10·§11의 스크린샷에 보이는 화면 자체는 이 수정 전후로 동일하다.
