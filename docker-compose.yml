@@ -1,0 +1,15 @@
+services:
+  web:
+    image: my-custom-nginx:1.0
+    container_name: compose-web
+    ports:
+      - "${WEB_PORT}:80"
+    environment:
+      - APP_ENV=${APP_ENV}
+
+  helper:
+    image: alpine:latest
+    container_name: compose-helper
+    command: sleep infinity
+    depends_on:
+      - web

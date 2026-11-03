@@ -18,45 +18,55 @@
 - [x] 파일 1개 + 디렉토리 1개 권한 변경 실습
 - [x] Docker 버전 확인 (`docker --version`)
 - [x] Docker 데몬 동작 확인 (`docker info`)
-- [x] Docker 이미지 다운로드 로그 (`docker pull`) — §8 참고
+- [x] Docker 이미지 다운로드 로그 (`docker pull`) — [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) 참고
 - [x] Docker 이미지 목록 확인 (`docker images`)
 - [x] 컨테이너 실행 (`docker run`)
-- [x] 컨테이너 중지 기록 (`docker stop` 전/후 상태 비교) — §8-4 참고
+- [x] 컨테이너 중지 기록 (`docker stop` 전/후 상태 비교) — [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) 참고
 - [x] 컨테이너 목록 확인 (`docker ps -a`)
 - [x] 컨테이너 로그 확인 (`docker logs`)
 - [x] 리소스 확인 (`docker stats`)
 - [x] hello-world 컨테이너 실행 성공
-- [x] ubuntu 컨테이너 대화형 셸(`-it`) 진입 — §8-5 참고 (내부 명령 출력은 일부 미기록, 해당 섹션에 명시)
-- [x] 컨테이너 종료/유지(주 프로세스 종료 vs `docker exec` 셸 종료) 차이 관찰 — §8-6 참고
+- [x] ubuntu 컨테이너 대화형 셸(`-it`) 진입 — [§8-5](#8-5-ubuntu-컨테이너-대화형-셸-진입) 참고
+- [x] 컨테이너 종료/유지(주 프로세스 종료 vs `docker exec` 셸 종료) 차이 관찰 — [§8-6](#8-6-컨테이너-종료유지--exec-셸-종료-vs-주-프로세스-종료-비교) 참고
 - [x] 기존 nginx 베이스 이미지 기반 커스텀 Dockerfile 작성/빌드
 - [x] 포트 매핑 접속 (8090, 8091 — 2회, 브라우저 증거 포함, 이 노트북에서 재현)
 - [x] 바인드 마운트 반영 검증 (이 노트북에서 재현)
 - [x] Docker 볼륨 영속성 검증 (이 노트북에서 재현)
 - [x] Git 사용자 정보/기본 브랜치 설정 + `git config --list` 기록
-- [x] GitHub 로그인/저장소 연동 증거 — §13-2 참고 (스크린샷 교체 완료)
+- [x] GitHub 로그인/저장소 연동 증거 — [§13-2](#13-2-github--vscode-연동-증거) 참고 (스크린샷 교체 완료)
+- [x] (보너스) Docker Compose 기초(단일 서비스 실행) — [§18-1](#18-1-docker-compose-기초) 참고
+- [x] (보너스) Docker Compose 멀티 컨테이너(네트워크 통신 확인) — [§18-2](#18-2-docker-compose-멀티-컨테이너) 참고
+- [x] (보너스) Compose 운영 명령어(up/down/ps/logs) — [§18-3](#18-3-compose-운영-명령어-up--down--ps--logs) 참고
+- [x] (보너스) 환경 변수로 설정과 코드 분리(포트 변경) — [§18-4](#18-4-환경-변수로-포트-변경-설정과-코드의-분리) 참고
+- [x] (보너스) GitHub SSH 키 설정 및 인증 확인 — [§18-5](#18-5-github-ssh-키-설정) 참고
 
 ## 4) 요구사항별 검증 방법과 증거 위치
 
 | 요구 항목 | 검증 명령 | 결과 위치 |
 |---|---|---|
-| 터미널 기본 조작 | `pwd`, `ls -la`, `cd`, `cp`, `mv`, `cat`, `touch`, `rm` | §6 |
-| 파일/디렉토리 권한 변경 | `chmod 600`/`700` 전/후 `ls -l` | §7 |
-| Docker 버전/데몬 점검 | `docker --version`, `docker info` | §5 |
-| 이미지 목록 확인 | `docker images` | §8 |
-| 컨테이너 목록/로그/리소스 | `docker ps -a`, `docker logs`, `docker stats` | §8 |
-| hello-world 실행 | `docker run hello-world` | §8 |
-| 커스텀 이미지 빌드 | `docker build` | §9 |
-| 커스텀 이미지 컨테이너 실행 | `docker run -d -p ...` | §10 |
-| 포트 매핑 접속 | 브라우저 `localhost:8090`, `localhost:8091` | §10, `docs/port-8090.png`, `docs/port-8091.png` |
-| 바인드 마운트 반영 | `localhost:8092` 변경 전/후 스크린샷 비교 | §11 |
-| 볼륨 영속성 | 컨테이너 재생성 후 `cat /data/hello.txt` | §12 |
-| Git 설정 | `git config --list` | §13 |
-| GitHub 연동 | VSCode 계정 패널 스크린샷 | `docs/vscode-github.png` |
-| 이미지 다운로드(pull) | `docker pull ubuntu` | §8 |
-| 컨테이너 중지 | `docker stop stop-test` | §8-4 |
-| 대화형 셸 진입 | `docker run -it ubuntu bash` | §8-5 |
-| 종료 방식 차이 | `docker exec` 셸 종료 vs `docker stop` | §8-6 |
-| GitHub push 동기화 확인 | `git remote -v`, `git log --oneline` | §13-1 |
+| 터미널 기본 조작 | `pwd`, `ls -la`, `cd`, `cp`, `mv`, `cat`, `touch`, `rm` | [§6](#6-터미널-기본-조작-로그) |
+| 파일/디렉토리 권한 변경 | `chmod 600`/`700` 전/후 `ls -l` | [§7](#7-권한-실습-변경-전후) |
+| Docker 버전/데몬 점검 | `docker --version`, `docker info` | [§5](#5-dockergit-설치-점검) |
+| 이미지 목록 확인 | `docker images` | [§8](#8-docker-기본-운영-명령--컨테이너-실행) |
+| 컨테이너 목록/로그/리소스 | `docker ps -a`, `docker logs`, `docker stats` | [§8](#8-docker-기본-운영-명령--컨테이너-실행) |
+| hello-world 실행 | `docker run hello-world` | [§8](#8-docker-기본-운영-명령--컨테이너-실행) |
+| 커스텀 이미지 빌드 | `docker build` | [§9](#9-커스텀-웹서버-dockerfile-기존-nginx-베이스-활용) |
+| 커스텀 이미지 컨테이너 실행 | `docker run -d -p ...` | [§10](#10-포트-매핑-접속-증거) |
+| 포트 매핑 접속 | 브라우저 `localhost:8090`, `localhost:8091` | [§10](#10-포트-매핑-접속-증거), [docs/port-8090.png](./docs/port-8090.png), [docs/port-8091.png](./docs/port-8091.png) |
+| 바인드 마운트 반영 | `localhost:8092` 변경 전/후 스크린샷 비교 | [§11](#11-바인드-마운트-반영-검증) |
+| 볼륨 영속성 | 컨테이너 재생성 후 `cat /data/hello.txt` | [§12](#12-docker-볼륨-영속성-검증) |
+| Git 설정 | `git config --list` | [§13](#13-git-설정) |
+| GitHub 연동 | VSCode 계정 패널 스크린샷 | [docs/vscode-github.png](./docs/vscode-github.png) |
+| 이미지 다운로드(pull) | `docker pull ubuntu` | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) |
+| 컨테이너 중지 | `docker stop stop-test` | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) |
+| 대화형 셸 진입 | `docker run -it ubuntu bash` | [§8-5](#8-5-ubuntu-컨테이너-대화형-셸-진입) |
+| 종료 방식 차이 | `docker exec` 셸 종료 vs `docker stop` | [§8-6](#8-6-컨테이너-종료유지--exec-셸-종료-vs-주-프로세스-종료-비교) |
+| GitHub push 동기화 확인 | `git remote -v`, `git fetch origin`, `git status -sb` | [§13-1](#13-1-git과-github의-역할-차이) |
+| Compose 기초(단일 서비스) | `docker compose up -d web` | [§18-1](#18-1-docker-compose-기초) |
+| Compose 멀티 컨테이너(네트워크 통신) | `docker compose exec helper wget -qO- http://web` | [§18-2](#18-2-docker-compose-멀티-컨테이너) |
+| Compose 운영 명령어 | `docker compose logs`, `down`, `ps` | [§18-3](#18-3-compose-운영-명령어-up--down--ps--logs) |
+| 환경 변수로 포트 변경 | `.env`의 `WEB_PORT` 수정 후 `docker compose up -d` | [§18-4](#18-4-환경-변수로-포트-변경-설정과-코드의-분리), [docs/compose-port-9090.png](./docs/compose-port-9090.png) |
+| GitHub SSH 키 설정 | `ssh-keygen`, `ssh -T git@github.com` | [§18-5](#18-5-github-ssh-키-설정) |
 
 ## 5) Docker/Git 설치 점검
 
@@ -191,7 +201,7 @@ ad1bcb259852   stats-test2   0.00%   3.02MiB / 15.25GiB   0.02%
 ```
 
 ### 8-1) 이미지 vs 컨테이너
-**이미지**는 실행에 필요한 파일/설정을 담은 변경 불가능한 템플릿이고, **컨테이너**는 그 이미지를 기반으로 실제 실행된 격리 프로세스다. 하나의 이미지로 여러 컨테이너를 동시에 띄울 수 있다 (실제로 본 실습에서도 `my-custom-nginx:1.0` 이미지 하나로 `my-nginx`, `my-nginx-2` 두 컨테이너를 각각 실행했다, §9).
+**이미지**는 실행에 필요한 파일/설정을 담은 변경 불가능한 템플릿이고, **컨테이너**는 그 이미지를 기반으로 실제 실행된 격리 프로세스다. 하나의 이미지로 여러 컨테이너를 동시에 띄울 수 있다 (실제로 본 실습에서도 `my-custom-nginx:1.0` 이미지 하나로 `my-nginx`, `my-nginx-2` 두 컨테이너를 각각 실행했다, §10).
 
 ### 8-2) 백그라운드 실행과 컨테이너 생명주기
 `-d`는 컨테이너를 백그라운드(detached)로 실행하는 옵션이다. 컨테이너는 **주 프로세스(PID 1)가 종료되면 함께 종료(Exited)**된다. 위 로그에서 `docker run --name ubuntu-test ubuntu bash -c "..."`가 명령을 마치자마자 `Exited` 상태가 된 것이 이 때문이고, 반대로 `sleep 300`처럼 즉시 끝나지 않는 프로세스를 주 프로세스로 실행하면 컨테이너는 `Up` 상태를 유지한다.
@@ -267,7 +277,7 @@ CONTAINER ID   IMAGE          COMMAND                   CREATED          STATUS 
 24f6b839c049   nginx:alpine   "/docker-entrypoint.…"    53 seconds ago   Exited (0) 5 seconds ago            lifecycle-test
 ```
 
-이번에는 주 프로세스를 직접 종료(`docker stop`)하자 컨테이너가 `Exited`로 바뀌었다. 두 결과를 비교하면, **`docker exec`로 실행한 추가 프로세스의 종료는 컨테이너 상태에 영향을 주지 않지만, 주 프로세스의 종료(또는 `docker stop`)는 컨테이너를 정지시킨다**는 차이가 명확히 드러난다. (`docker stop`은 컨테이너에 SIGTERM을 보내고 정해진 유예 시간 내에 종료되지 않으면 SIGKILL로 강제 종료하는 방식이라, "즉시" 멈추는 것은 아니다.)
+이번에는 주 프로세스를 직접 종료(`docker stop`)하자 컨테이너가 `Exited`로 바뀌었다. 두 결과를 비교하면, **`docker exec`로 실행한 추가 프로세스의 종료는 컨테이너 상태에 영향을 주지 않지만, 주 프로세스의 종료(또는 `docker stop`)는 컨테이너를 정지시킨다**는 차이가 명확히 드러난다. (`docker stop`은 컨테이너에 설정된 종료 신호(기본 SIGTERM)를 보내고 정해진 유예 시간 내에 종료되지 않으면 SIGKILL로 강제 종료하는 방식이라, "즉시" 멈추는 것은 아니다.)
 
 ## 9) 커스텀 웹서버 Dockerfile (기존 nginx 베이스 활용)
 
@@ -313,7 +323,7 @@ $ docker run -d -p 8090:80 --name my-nginx my-custom-nginx:1.0
 $ docker run -d -p 8091:80 --name my-nginx-2 my-custom-nginx:1.0
 ```
 
-`-p 8090:80`은 "호스트의 8090번 포트 → 컨테이너의 80번 포트" 연결을 의미한다. 컨테이너는 기본적으로 격리된 네트워크 네임스페이스에 있어 호스트에서 직접 접근할 수 없는데, 포트 매핑으로 이 둘을 연결해야 브라우저(호스트)에서 컨테이너 내부 nginx(80번 포트 대기)에 접근할 수 있다.
+`-p 8090:80`은 "호스트의 8090번 포트 → 컨테이너의 80번 포트" 연결을 의미한다. 컨테이너는 기본적으로 격리된 네트워크 네임스페이스에 있다. 이번 환경에서는 localhost로 접속하기 위해 포트를 매핑했다 — 포트 매핑으로 호스트와 컨테이너를 연결해야 브라우저(호스트)에서 컨테이너 내부 nginx(80번 포트 대기)에 접근할 수 있다.
 
 브라우저에서 아래 주소로 각각 접속하여 주소창이 포함된 스크린샷을 저장했다 (이 노트북에서 재현한 결과로 교체).
 
@@ -344,6 +354,17 @@ $ echo "<p>Updated again via bind mount on this laptop!</p>" >> site/index.html
 바인드 마운트는 호스트 디렉토리를 컨테이너 내부 경로에 직접 연결한다. 컨테이너를 재시작하지 않아도 호스트의 파일 수정 내용이 즉시 컨테이너에 반영됨을 이 노트북에서도 동일하게 재확인했다.
 
 > 재현 시 주의: 위 `$(pwd)` 명령은 **프로젝트 루트에서 WSL bash로 실행**해야 한다. 다른 셸(PowerShell 등)에서는 `$(pwd)` 문법이 동일하게 동작하지 않는다.
+
+### 11-1) 재검증 시 주의사항
+
+위 §11의 명령과 변경 전/후 증거는 그 실습을 실행했던 당시의 기록 그대로이며, 수정하지 않았다. 다만 이 기록을 그대로 다시 재현하려는 경우 주의할 점이 있다.
+
+**현재 `site/index.html`에는 이미 "변경 후" 문구(`Updated via bind mount!`, `Updated again via bind mount on this laptop!`)가 `<body>` 안에 들어가 있는 상태다.** 이 상태에서 §11에 적힌 것과 **똑같은 `echo "..." >> site/index.html` 명령을 그대로 다시 실행하면**, 기존 문구에 더해 **같은 내용이 중복으로 추가**되고, `</html>` 태그 뒤에 새 줄이 붙게 된다 (`echo >>`는 HTML 구조를 이해하지 못하고 파일 맨 끝에 단순히 텍스트를 추가하는 명령이기 때문이다).
+
+위 로그는 최초 실습 당시의 기록이며, 아래는 재검증 방법에 대한 안내다:
+
+1. `echo ... >>`로 새 줄을 추가하는 대신, **`<body>` 안에 있는 기존 문구 자체를 새로운 내용으로 수정**한다 (예: `sed` 또는 `nano`로 기존 `<p>` 태그의 텍스트를 교체).
+2. 컨테이너를 재시작하지 않고 **브라우저를 새로고침**해서, 바뀐 내용이 바로 반영되는지 확인한다 (바인드 마운트이므로 호스트 파일 수정이 컨테이너에도 즉시 반영된다 — 이 원리 자체는 §11의 기존 실습에서 이미 확인한 것과 동일하다).
 
 ## 12) Docker 볼륨 영속성 검증
 
@@ -459,7 +480,6 @@ curl http://localhost:8090
 ```
 
 - 바인드 마운트 재현 시 `$(pwd)` 명령은 반드시 **프로젝트 루트에서 WSL bash**로 실행해야 한다.
-- 터미널 애플리케이션 종류(Windows Terminal 등)는 기존 기록에 명시되어 있지 않아 **확인 필요**로 남긴다.
 - §5~§13의 실습은 이 노트북에서 **Docker Desktop(WSL Integration)** 환경으로 재현한 결과다.
 
 ## 16) 추가 실습 완료 내역
@@ -483,6 +503,8 @@ curl http://localhost:8090
 ```text
 .
 ├── Dockerfile
+├── docker-compose.yml
+├── .env
 ├── README.md
 ├── site/
 │   └── index.html
@@ -491,11 +513,181 @@ curl http://localhost:8090
     ├── port-8091.png
     ├── vscode-github.png
     ├── bind-mount-before.png
-    └── bind-mount-after.png
+    ├── bind-mount-after.png
+    └── compose-port-9090.png
 ```
 
-## 18) 참고
+## 18) 보너스 과제
+
+> 아래 18-1~18-5는 항목별 기록이며 시간순이 아니다. 현재 `.env`의 `WEB_PORT`는 `9090`이고, `8095`는 과거 실습 당시의 값이다.
+
+### 18-1) Docker Compose 기초
+
+`docker-compose.yml`에 두 개의 서비스를 정의했다: 아까 만든 커스텀 nginx 이미지를 쓰는 `web`과, 18-2에서 쓸 보조 컨테이너 `helper`(alpine). 이 `docker-compose.yml`은 이미지를 빌드(`build:`)하지 않고 **이미 로컬에 존재하는 이미지 이름**(`my-custom-nginx:1.0`)을 그대로 참조하는 방식이다. 따라서 새 환경에서 재현하려면 Compose를 실행하기 전에 반드시 그 이미지를 먼저 빌드해야 한다.
+
+```yaml
+services:
+  web:
+    image: my-custom-nginx:1.0
+    container_name: compose-web
+    ports:
+      - "${WEB_PORT}:80"
+    environment:
+      - APP_ENV=${APP_ENV}
+
+  helper:
+    image: alpine:latest
+    container_name: compose-helper
+    command: sleep infinity
+    depends_on:
+      - web
+```
+
+```bash
+# Compose 실행 전 이미지 빌드 선행 (§9와 동일)
+$ docker build -t my-custom-nginx:1.0 .
+```
+
+"기초" 단계로서, `web` 서비스 하나만 지정해서 실행했다 (`helper`는 `web`에 의존하는 쪽이라 지정하지 않으면 같이 뜨지 않는다):
+
+```bash
+$ docker compose down
+$ docker compose up -d web
+$ docker compose ps
+[+] up 2/2
+ ✔ Network codyssey-dev-workstation-e1-1_default   Created
+ ✔ Container compose-web                           Started
+
+NAME          IMAGE                 COMMAND                  SERVICE   STATUS   PORTS
+compose-web   my-custom-nginx:1.0   "/docker-entrypoint.…"   web       Up       0.0.0.0:9090->80/tcp, [::]:9090->80/tcp
+```
+
+`compose-web`만 떴고 `compose-helper`는 뜨지 않은 것으로, `web` 단일 서비스만 지정해서 실행했음을 확인했다. (포트가 `9090`으로 보이는 것은 §18-4에서 `.env`의 `WEB_PORT`를 `8095` → `9090`으로 바꾼 뒤이기 때문이며, 최초 실행 시점에는 `8095`였다.)
+
+### 18-2) Docker Compose 멀티 컨테이너
+
+18-1과는 별도로, 서비스 지정 없이 `docker compose up -d`를 실행해서 `docker-compose.yml`에 정의된 **두 서비스(`web`, `helper`)를 함께** 띄웠다 (이때는 `.env`의 `WEB_PORT`가 아직 `8095`였던 시점이다).
+
+```bash
+$ docker compose up -d
+[+] up 7/7
+ ✔ Image alpine:latest                               Pulled   5.6s
+ ✔ Network codyssey-dev-workstation-e1-1_default      Created  0.1s
+ ✔ Container compose-web                              Started  0.5s
+ ✔ Container compose-helper                           Started  0.6s
+
+$ docker compose ps
+NAME             IMAGE                 COMMAND                  SERVICE   STATUS   PORTS
+compose-helper   alpine:latest         "sleep infinity"         helper    Up
+compose-web      my-custom-nginx:1.0   "/docker-entrypoint.…"   web       Up       0.0.0.0:8095->80/tcp, [::]:8095->80/tcp
+```
+
+이 상태에서 **컨테이너 간 네트워크 통신**을 확인했다 — `helper` 컨테이너에서 IP 주소가 아니라 Compose 서비스 이름(`web`)만으로 `web` 컨테이너에 접근:
+
+> 용어 구분: `docker-compose.yml`에서 서비스 이름은 `web`이고, 실제 컨테이너 이름은 `container_name: compose-web`으로 별도 지정했다. Docker Compose는 **서비스 이름**을 내부 DNS로 등록해주기 때문에, 아래 `wget` 요청은 (실제 컨테이너 이름인 `compose-web`이 아니라) 서비스 이름 `web`로 보냈다.
+
+```bash
+$ docker compose exec helper wget -qO- http://web
+<!doctype html>
+<html>
+<body>
+<h1>Codyssey Gyeongnam - kimjinho Lab</h1>
+</body>
+</html>
+<p>Updated via bind mount!</p>
+```
+
+`helper`가 IP 주소가 아니라 서비스 이름(`web`)만으로 요청을 보낼 수 있었다는 것은, Docker Compose가 같은 프로젝트의 서비스들을 위해 자동으로 전용 네트워크와 내부 DNS(서비스명 → 컨테이너 IP)를 구성해준다는 증거다.
+
+> 위 `wget` 결과에 보이는 HTML은 `</html>` 뒤에 `<p>` 태그가 있는 구조 수정 전 버전이다. 이 이미지(`my-custom-nginx:1.0`)가 §19에서 설명한 HTML 구조 수정 이전에 빌드된 것이기 때문이며, 포트/네트워크 확인이라는 이 실습의 목적과는 무관하다.
+
+### 18-3) Compose 운영 명령어 (up / down / ps / logs)
+
+```bash
+$ docker compose logs web --tail 5
+compose-web  | 172.18.0.1 - - [03/Nov/2026:08:01:14 +0000] "GET / HTTP/1.1" 200 120 "-" "curl/8.18.0" "-"
+compose-web  | 172.18.0.3 - - [03/Nov/2026:08:01:21 +0000] "GET / HTTP/1.1" 200 120 "-" "Wget" "-"
+compose-web  | 172.18.0.1 - - [03/Nov/2026:08:01:42 +0000] "GET / HTTP/1.1" 200 120 "-" "Mozilla/5.0 ..." "-"
+compose-web  | 2026/11/03 08:01:42 [error] 33#33: *3 open() "/usr/share/nginx/html/favicon.ico" failed (2: No such file or directory), ...
+compose-web  | 172.18.0.1 - - [03/Nov/2026:08:01:42 +0000] "GET /favicon.ico HTTP/1.1" 404 555 "http://localhost:8095/" "Mozilla/5.0 ..." "-"
+
+$ docker compose down
+[+] down 3/3
+ ✔ Container compose-helper                        Removed
+ ✔ Container compose-web                           Removed
+ ✔ Network codyssey-dev-workstation-e1-1_default    Removed
+
+$ docker compose ps
+NAME   IMAGE   COMMAND   SERVICE   CREATED   STATUS   PORTS
+```
+
+`logs`로 각 요청(curl, wget, 브라우저)의 접속 기록까지 확인했고, `down`으로 컨테이너와 네트워크가 깔끔히 정리된 뒤 `ps`가 빈 목록을 반환하는 것도 확인했다.
+
+### 18-4) 환경 변수로 포트 변경 (설정과 코드의 분리)
+
+`.env` 파일에 `WEB_PORT`를 정의해서 `docker-compose.yml`이 이 값을 읽도록 구성했다.
+
+```bash
+# .env (최초)
+WEB_PORT=8095
+APP_ENV=dev
+```
+
+`.env`의 `WEB_PORT`를 `9090`으로 바꾸고 다시 `docker compose up -d`를 실행했다. Dockerfile이나 코드는 전혀 건드리지 않았다.
+
+```bash
+$ docker compose up -d
+[+] up 3/3
+ ✔ Network codyssey-dev-workstation-e1-1_default   Created
+ ✔ Container compose-web                           Started
+ ✔ Container compose-helper                        Started
+
+$ docker compose ps
+NAME             IMAGE                 COMMAND                  SERVICE   STATUS   PORTS
+compose-helper   alpine:latest         "sleep infinity"         helper    Up
+compose-web      my-custom-nginx:1.0   "/docker-entrypoint.…"   web       Up       0.0.0.0:9090->80/tcp, [::]:9090->80/tcp
+```
+
+`docker compose ps`의 `PORTS` 란에서 `9090`으로 바뀐 것을 확인했고, 터미널 `curl`이 아니라 **브라우저로 직접 접속해서** 주소창과 응답 화면을 함께 캡처했다:
+
+![Compose 환경변수로 변경된 포트 접속](./docs/compose-port-9090.png)
+
+`.env` 파일 하나만 바꿨는데 서비스에 접속하는 포트가 `8095`에서 `9090`으로 바뀌었다. 이때 바뀐 것은 **호스트(이 노트북)에 공개되는 포트**이고, `docker-compose.yml`의 `"${WEB_PORT}:80"`에서 뒤쪽 `80`(컨테이너 내부에서 nginx가 듣는 포트)은 그대로다 — 즉 컨테이너 내부 설정이 아니라 "호스트와 컨테이너를 연결하는 입구"만 설정값으로 바뀐 것이다. 이것이 "설정(config)과 코드(code)의 분리" — 실행 환경에 따라 달라져야 하는 값(포트, 모드 등)을 코드에 하드코딩하지 않고 외부 설정 파일로 분리해 관리하는 방식이다.
+
+### 18-5) GitHub SSH 키 설정
+
+```bash
+$ ssh-keygen -t ed25519 -C "jinhog177@g***.com" -f ~/.ssh/codyssey_key
+Generating public/private ed25519 key pair.
+Your identification has been saved in /home/wlsgh/.ssh/codyssey_key
+Your public key has been saved in /home/wlsgh/.ssh/codyssey_key.pub
+The key fingerprint is:
+SHA256:QbrlN2UE2aQPMdqHks7eT5UyMd52iboekQXHG7GEyNw jinhog177@g***.com
+```
+(§13과 동일한 기준으로 이메일 일부를 마스킹했다. 실제 명령 실행 시에는 전체 이메일을 입력했다.)
+
+공개키(`~/.ssh/codyssey_key.pub`)를 GitHub(Settings → SSH and GPG keys)에 등록한 뒤 인증을 확인했다.
+
+```bash
+$ ssh -T -i ~/.ssh/codyssey_key git@github.com
+Hi jinho1017-eng! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+기존 HTTPS `origin`은 그대로 유지한 채, SSH 전용 원격을 추가로 등록해 실제 push까지 검증했다.
+
+```bash
+$ git config core.sshCommand "ssh -i ~/.ssh/codyssey_key"
+$ git remote add origin-ssh git@github.com:jinho1017-eng/codyssey-dev-workstation-E1-1.git
+$ git push origin-ssh main
+Everything up-to-date
+```
+
+`Everything up-to-date`는 오류가 아니라, SSH로 인증은 성공했고 로컬과 원격의 커밋이 이미 같아서 보낼 내용이 없었다는 뜻이다 — 즉 SSH 인증·통신 경로 자체가 정상 동작함을 확인한 결과다.
+
+> 개인키(`~/.ssh/codyssey_key`)는 저장소 밖에 생성·보관했다. Git 이력 전체는 별도로 검사하지 않았다. 위에 적은 fingerprint와 공개키 값은 공개해도 안전한 정보다.
+
+## 19) 참고
 - 모든 작업은 WSL2(Ubuntu) 터미널 기반 CLI로 수행했다.
 - 브라우저 접속 스크린샷과 VSCode-GitHub 연동 스크린샷은 `docs/` 폴더에 포함되어 있다.
-- 보너스 과제(Docker Compose 등)는 본 제출 범위에 포함하지 않았다.
+- 보너스 과제(Docker Compose 기초/멀티 컨테이너/운영 명령어, 환경변수 활용, GitHub SSH 키 설정)는 §18에 모두 포함했다.
 - `site/index.html`에서 바인드 마운트 테스트로 추가된 `<p>` 태그들이 `</html>` 뒤에 위치해 있던 구조적 오류를 `<body>` 내부로 옮겨 수정했다. 브라우저는 원래도 자동으로 보정해서 보여줬기 때문에 §10·§11의 스크린샷에 보이는 화면 자체는 이 수정 전후로 동일하다.
