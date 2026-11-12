@@ -23,9 +23,11 @@
 19. [참고](#19-참고)
 
 ## 1) 프로젝트 개요
+
 터미널 기본 조작과 파일 권한을 익히고, WSL2(Ubuntu) 환경에서 Docker를 설치·점검한 뒤 nginx 기반 커스텀 웹서버 이미지를 제작했다. 포트 매핑, 바인드 마운트, 볼륨 영속성을 직접 실행 결과로 검증했다. Git 사용자 설정과 GitHub 연동까지 포함해, 코드가 "내 컴퓨터에서만" 동작하는 문제를 줄이고 재현 가능한 개발 환경을 구성하는 것을 목표로 했다.
 
 ## 2) 실행 환경
+
 - OS: Windows (WSL2 - Ubuntu 26.04.1 LTS)
 - Kernel: 6.18.54.1-microsoft-standard-WSL2
 - Shell: bash
@@ -36,59 +38,60 @@
 > **환경 확정**: §6~§13의 재현 실습 로그는 Windows 노트북에서 **Docker Desktop(WSL2 Integration)** 을 통해 Ubuntu WSL 배포판의 `docker` CLI로 수행한 결과다. WSL2를 활성화하고(`wsl --install`), Docker Desktop을 D드라이브에 설치한 뒤(`--installation-dir=D:\Docker --wsl-default-data-root=D:\DockerData`), Ubuntu 배포판을 기본값으로 지정(`wsl --set-default Ubuntu`)하고 Docker Desktop 설정에서 WSL Integration을 켜서 연동했다. §5의 `docker info` 출력에서 `Operating System: Docker Desktop`, `Name: docker-desktop`으로 이 사실이 직접 확인된다. 최초 README의 "Docker Engine - Community" 표기는 다른(클라우드) 환경에서의 기록이며, 본 재현 작업과는 별개 환경이다.
 
 ## 3) 수행 체크리스트
-- [x] 터미널 기본 조작 (pwd / ls -la / cd / mkdir / cp / mv / cat / touch / rm)
-- [x] 파일 1개 + 디렉토리 1개 권한 변경 실습
-- [x] Docker 버전 확인 (`docker --version`)
-- [x] Docker 데몬 동작 확인 (`docker info`)
-- [x] Docker 이미지 다운로드 로그 (`docker pull`) — [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) 참고
-- [x] Docker 이미지 목록 확인 (`docker images`)
-- [x] 컨테이너 실행 (`docker run`)
-- [x] 컨테이너 중지 기록 (`docker stop` 전/후 상태 비교) — [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) 참고
-- [x] 컨테이너 목록 확인 (`docker ps -a`)
-- [x] 컨테이너 로그 확인 (`docker logs`)
-- [x] 리소스 확인 (`docker stats`)
-- [x] hello-world 컨테이너 실행 성공
-- [x] ubuntu 컨테이너 대화형 셸(`-it`) 진입 — [§8-5](#8-5-ubuntu-컨테이너-대화형-셸-진입) 참고
-- [x] 컨테이너 종료/유지(주 프로세스 종료 vs `docker exec` 셸 종료) 차이 관찰 — [§8-6](#8-6-컨테이너-종료유지--exec-셸-종료-vs-주-프로세스-종료-비교) 참고
-- [x] 기존 nginx 베이스 이미지 기반 커스텀 Dockerfile 작성/빌드
-- [x] 포트 매핑 접속 (8090, 8091 — 2회, 브라우저 증거 포함, 이 노트북에서 재현)
-- [x] 바인드 마운트 반영 검증 (이 노트북에서 재현)
-- [x] Docker 볼륨 영속성 검증 (이 노트북에서 재현)
-- [x] Git 사용자 정보/기본 브랜치 설정 + `git config --list` 기록
-- [x] GitHub 로그인/저장소 연동 증거 — [§13-2](#13-2-github--vscode-연동-증거) 참고 (스크린샷 교체 완료)
-- [x] (보너스) Docker Compose 기초(단일 서비스 실행) — [§18-1](#18-1-docker-compose-기초) 참고
-- [x] (보너스) Docker Compose 멀티 컨테이너(네트워크 통신 확인) — [§18-2](#18-2-docker-compose-멀티-컨테이너) 참고
-- [x] (보너스) Compose 운영 명령어(up/down/ps/logs) — [§18-3](#18-3-compose-운영-명령어-up--down--ps--logs) 참고
-- [x] (보너스) 환경 변수로 설정과 코드 분리(포트 변경) — [§18-4](#18-4-환경-변수로-포트-변경-설정과-코드의-분리) 참고
-- [x] (보너스) GitHub SSH 키 설정 및 인증 확인 — [§18-5](#18-5-github-ssh-키-설정) 참고
+
+- [X] 터미널 기본 조작 (pwd / ls -la / cd / mkdir / cp / mv / cat / touch / rm)
+- [X] 파일 1개 + 디렉토리 1개 권한 변경 실습
+- [X] Docker 버전 확인 (`docker --version`)
+- [X] Docker 데몬 동작 확인 (`docker info`)
+- [X] Docker 이미지 다운로드 로그 (`docker pull`) — [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) 참고
+- [X] Docker 이미지 목록 확인 (`docker images`)
+- [X] 컨테이너 실행 (`docker run`)
+- [X] 컨테이너 중지 기록 (`docker stop` 전/후 상태 비교) — [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) 참고
+- [X] 컨테이너 목록 확인 (`docker ps -a`)
+- [X] 컨테이너 로그 확인 (`docker logs`)
+- [X] 리소스 확인 (`docker stats`)
+- [X] hello-world 컨테이너 실행 성공
+- [X] ubuntu 컨테이너 대화형 셸(`-it`) 진입 — [§8-5](#8-5-ubuntu-컨테이너-대화형-셸-진입) 참고
+- [X] 컨테이너 종료/유지(주 프로세스 종료 vs `docker exec` 셸 종료) 차이 관찰 — [§8-6](#8-6-컨테이너-종료유지--exec-셸-종료-vs-주-프로세스-종료-비교) 참고
+- [X] 기존 nginx 베이스 이미지 기반 커스텀 Dockerfile 작성/빌드
+- [X] 포트 매핑 접속 (8090, 8091 — 2회, 브라우저 증거 포함, 이 노트북에서 재현)
+- [X] 바인드 마운트 반영 검증 (이 노트북에서 재현)
+- [X] Docker 볼륨 영속성 검증 (이 노트북에서 재현)
+- [X] Git 사용자 정보/기본 브랜치 설정 + `git config --list` 기록
+- [X] GitHub 로그인/저장소 연동 증거 — [§13-2](#13-2-github--vscode-연동-증거) 참고 (스크린샷 교체 완료)
+- [X] (보너스) Docker Compose 기초(단일 서비스 실행) — [§18-1](#18-1-docker-compose-기초) 참고
+- [X] (보너스) Docker Compose 멀티 컨테이너(네트워크 통신 확인) — [§18-2](#18-2-docker-compose-멀티-컨테이너) 참고
+- [X] (보너스) Compose 운영 명령어(up/down/ps/logs) — [§18-3](#18-3-compose-운영-명령어-up--down--ps--logs) 참고
+- [X] (보너스) 환경 변수로 설정과 코드 분리(포트 변경) — [§18-4](#18-4-환경-변수로-포트-변경-설정과-코드의-분리) 참고
+- [X] (보너스) GitHub SSH 키 설정 및 인증 확인 — [§18-5](#18-5-github-ssh-키-설정) 참고
 
 ## 4) 요구사항별 검증 방법과 증거 위치
 
-| 요구 항목 | 검증 명령 | 결과 위치 |
-|---|---|---|
-| 터미널 기본 조작 | `pwd`, `ls -la`, `cd`, `cp`, `mv`, `cat`, `touch`, `rm` | [§6](#6-터미널-기본-조작-로그) |
-| 파일/디렉토리 권한 변경 | `chmod 600`/`700` 전/후 `ls -l` | [§7](#7-권한-실습-변경-전후) |
-| Docker 버전/데몬 점검 | `docker --version`, `docker info` | [§5](#5-dockergit-설치-점검) |
-| 이미지 목록 확인 | `docker images` | [§8](#8-docker-기본-운영-명령--컨테이너-실행) |
-| 컨테이너 목록/로그/리소스 | `docker ps -a`, `docker logs`, `docker stats` | [§8](#8-docker-기본-운영-명령--컨테이너-실행) |
-| hello-world 실행 | `docker run hello-world` | [§8](#8-docker-기본-운영-명령--컨테이너-실행) |
-| 커스텀 이미지 빌드 | `docker build` | [§9](#9-커스텀-웹서버-dockerfile-기존-nginx-베이스-활용) |
-| 커스텀 이미지 컨테이너 실행 | `docker run -d -p ...` | [§10](#10-포트-매핑-접속-증거) |
-| 포트 매핑 접속 | 브라우저 `localhost:8090`, `localhost:8091` | [§10](#10-포트-매핑-접속-증거), [docs/port-8090.png](./docs/port-8090.png), [docs/port-8091.png](./docs/port-8091.png) |
-| 바인드 마운트 반영 | `localhost:8092` 변경 전/후 스크린샷 비교 | [§11](#11-바인드-마운트-반영-검증) |
-| 볼륨 영속성 | 컨테이너 재생성 후 `cat /data/hello.txt` | [§12](#12-docker-볼륨-영속성-검증) |
-| Git 설정 | `git config --list` | [§13](#13-git-설정) |
-| GitHub 연동 | VSCode 계정 패널 스크린샷 | [docs/vscode-github.png](./docs/vscode-github.png) |
-| 이미지 다운로드(pull) | `docker pull ubuntu` | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) |
-| 컨테이너 중지 | `docker stop stop-test` | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록) |
-| 대화형 셸 진입 | `docker run -it ubuntu bash` | [§8-5](#8-5-ubuntu-컨테이너-대화형-셸-진입) |
-| 종료 방식 차이 | `docker exec` 셸 종료 vs `docker stop` | [§8-6](#8-6-컨테이너-종료유지--exec-셸-종료-vs-주-프로세스-종료-비교) |
-| GitHub push 동기화 확인 | `git remote -v`, `git fetch origin`, `git status -sb` | [§13-1](#13-1-git과-github의-역할-차이) |
-| Compose 기초(단일 서비스) | `docker compose up -d web` | [§18-1](#18-1-docker-compose-기초) |
-| Compose 멀티 컨테이너(네트워크 통신) | `docker compose exec helper wget -qO- http://web` | [§18-2](#18-2-docker-compose-멀티-컨테이너) |
-| Compose 운영 명령어 | `docker compose logs`, `down`, `ps` | [§18-3](#18-3-compose-운영-명령어-up--down--ps--logs) |
-| 환경 변수로 포트 변경 | `.env`의 `WEB_PORT` 수정 후 `docker compose up -d` | [§18-4](#18-4-환경-변수로-포트-변경-설정과-코드의-분리), [docs/compose-port-9090.png](./docs/compose-port-9090.png) |
-| GitHub SSH 키 설정 | `ssh-keygen`, `ssh -T git@github.com` | [§18-5](#18-5-github-ssh-키-설정) |
+| 요구 항목                            | 검증 명령                                                               | 결과 위치                                                                                                            |
+| ------------------------------------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| 터미널 기본 조작                     | `pwd`, `ls -la`, `cd`, `cp`, `mv`, `cat`, `touch`, `rm` | [§6](#6-터미널-기본-조작-로그)                                                                                       |
+| 파일/디렉토리 권한 변경              | `chmod 600`/`700` 전/후 `ls -l`                                   | [§7](#7-권한-실습-변경-전후)                                                                                         |
+| Docker 버전/데몬 점검                | `docker --version`, `docker info`                                   | [§5](#5-dockergit-설치-점검)                                                                                         |
+| 이미지 목록 확인                     | `docker images`                                                       | [§8](#8-docker-기본-운영-명령--컨테이너-실행)                                                                        |
+| 컨테이너 목록/로그/리소스            | `docker ps -a`, `docker logs`, `docker stats`                     | [§8](#8-docker-기본-운영-명령--컨테이너-실행)                                                                        |
+| hello-world 실행                     | `docker run hello-world`                                              | [§8](#8-docker-기본-운영-명령--컨테이너-실행)                                                                        |
+| 커스텀 이미지 빌드                   | `docker build`                                                        | [§9](#9-커스텀-웹서버-dockerfile-기존-nginx-베이스-활용)                                                             |
+| 커스텀 이미지 컨테이너 실행          | `docker run -d -p ...`                                                | [§10](#10-포트-매핑-접속-증거)                                                                                       |
+| 포트 매핑 접속                       | 브라우저 `localhost:8090`, `localhost:8091`                         | [§10](#10-포트-매핑-접속-증거), [docs/port-8090.png](./docs/port-8090.png), [docs/port-8091.png](./docs/port-8091.png) |
+| 바인드 마운트 반영                   | `localhost:8092` 변경 전/후 스크린샷 비교                             | [§11](#11-바인드-마운트-반영-검증)                                                                                   |
+| 볼륨 영속성                          | 컨테이너 재생성 후 `cat /data/hello.txt`                              | [§12](#12-docker-볼륨-영속성-검증)                                                                                   |
+| Git 설정                             | `git config --list`                                                   | [§13](#13-git-설정)                                                                                                  |
+| GitHub 연동                          | VSCode 계정 패널 스크린샷                                               | [docs/vscode-github.png](./docs/vscode-github.png)                                                                    |
+| 이미지 다운로드(pull)                | `docker pull ubuntu`                                                  | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록)                                                             |
+| 컨테이너 중지                        | `docker stop stop-test`                                               | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록)                                                             |
+| 대화형 셸 진입                       | `docker run -it ubuntu bash`                                          | [§8-5](#8-5-ubuntu-컨테이너-대화형-셸-진입)                                                                          |
+| 종료 방식 차이                       | `docker exec` 셸 종료 vs `docker stop`                              | [§8-6](#8-6-컨테이너-종료유지--exec-셸-종료-vs-주-프로세스-종료-비교)                                                |
+| GitHub push 동기화 확인              | `git remote -v`, `git fetch origin`, `git status -sb`             | [§13-1](#13-1-git과-github의-역할-차이)                                                                              |
+| Compose 기초(단일 서비스)            | `docker compose up -d web`                                            | [§18-1](#18-1-docker-compose-기초)                                                                                   |
+| Compose 멀티 컨테이너(네트워크 통신) | `docker compose exec helper wget -qO- http://web`                     | [§18-2](#18-2-docker-compose-멀티-컨테이너)                                                                          |
+| Compose 운영 명령어                  | `docker compose logs`, `down`, `ps`                               | [§18-3](#18-3-compose-운영-명령어-up--down--ps--logs)                                                                |
+| 환경 변수로 포트 변경                | `.env`의 `WEB_PORT` 수정 후 `docker compose up -d`                | [§18-4](#18-4-환경-변수로-포트-변경-설정과-코드의-분리), [docs/compose-port-9090.png](./docs/compose-port-9090.png)   |
+| GitHub SSH 키 설정                   | `ssh-keygen`, `ssh -T git@github.com`                               | [§18-5](#18-5-github-ssh-키-설정)                                                                                    |
 
 ## 5) Docker/Git 설치 점검
 
@@ -121,6 +124,7 @@ Server:
  Docker Root Dir: /var/lib/docker
  Debug Mode: false
 ```
+
 (위는 이 노트북에서 재실행한 결과이며, 길이가 긴 출력 중 핵심 라인만 발췌했다. `Operating System: Docker Desktop`, `Name: docker-desktop`을 통해 이 환경이 Docker Desktop(WSL Integration)임이 직접 확인된다.)
 
 ## 6) 터미널 기본 조작 로그
@@ -155,6 +159,7 @@ drwxr-xr-x 4 wlsgh171704620 wlsgh171704620 4096 Nov  3 11:21 ..
 ```
 
 ### 6-1) 절대 경로 vs 상대 경로
+
 - 위 로그에서 `pwd`가 출력한 `/home/wlsgh171704620/codyssey-dev-workstation/practice`는 루트(`/`)부터 시작하는 **절대 경로**다. 항상 같은 위치를 가리킨다.
 - 반면 `cd practice`, `cat a.txt`처럼 현재 위치를 기준으로 쓴 경로는 **상대 경로**다. 예를 들어 `practice` 디렉토리 안에서 `cat a.txt`를 실행하면 실제로는 `/home/.../codyssey-dev-workstation/practice/a.txt`를 가리키지만, 현재 위치가 바뀌면 같은 `a.txt`라는 상대 경로도 다른 파일을 가리킬 수 있다.
 
@@ -186,6 +191,7 @@ drwx------ 2 wlsgh171704620 wlsgh171704620 4096 Nov  3 11:23 testdir
 ```
 
 ### 7-1) 권한 표기 설명
+
 - 권한은 `r(읽기)=4`, `w(쓰기)=2`, `x(실행/탐색)=1`의 합으로 숫자 하나에 표현된다. 자릿수는 순서대로 **소유자 / 그룹 / 기타 사용자**다.
 - `755` = 소유자 `rwx`(7) · 그룹 `r-x`(5) · 기타 `r-x`(5) — 소유자만 쓰기 가능, 나머지는 읽기/실행만 가능
 - `644` = 소유자 `rw-`(6) · 그룹 `r--`(4) · 기타 `r--`(4) — 일반 파일에 흔히 쓰는 조합
@@ -223,12 +229,15 @@ ad1bcb259852   stats-test2   0.00%   3.02MiB / 15.25GiB   0.02%
 ```
 
 ### 8-1) 이미지 vs 컨테이너
+
 **이미지**는 실행에 필요한 파일/설정을 담은 변경 불가능한 템플릿이고, **컨테이너**는 그 이미지를 기반으로 실제 실행된 격리 프로세스다. 하나의 이미지로 여러 컨테이너를 동시에 띄울 수 있다 (실제로 본 실습에서도 `my-custom-nginx:1.0` 이미지 하나로 `my-nginx`, `my-nginx-2` 두 컨테이너를 각각 실행했다, §10).
 
 ### 8-2) 백그라운드 실행과 컨테이너 생명주기
+
 `-d`는 컨테이너를 백그라운드(detached)로 실행하는 옵션이다. 컨테이너는 **주 프로세스(PID 1)가 종료되면 함께 종료(Exited)**된다. 위 로그에서 `docker run --name ubuntu-test ubuntu bash -c "..."`가 명령을 마치자마자 `Exited` 상태가 된 것이 이 때문이고, 반대로 `sleep 300`처럼 즉시 끝나지 않는 프로세스를 주 프로세스로 실행하면 컨테이너는 `Up` 상태를 유지한다.
 
 ### 8-3) docker exec
+
 `docker exec`는 **이미 실행 중인 컨테이너 내부에 별도의 추가 프로세스를 실행**하는 명령이다. 주 프로세스와 독립적이므로, `docker exec`로 연 셸을 종료해도 컨테이너의 주 프로세스가 살아있다면 컨테이너 자체는 계속 실행 상태를 유지한다. (직접 비교 실습은 §8-6 참고)
 
 ### 8-4) 이미지 다운로드(pull) + 컨테이너 중지(stop) 기록
@@ -336,6 +345,7 @@ $ docker build -t my-custom-nginx:1.0 .
  => => naming to docker.io/library/my-custom-nginx:1.0            0.0s
  => => unpacking to docker.io/library/my-custom-nginx:1.0         0.0s
 ```
+
 (위 출력은 실제 빌드 로그 중 핵심 라인만 발췌한 것이며, 레이어 추출 등 세부 라인은 생략했다)
 
 ## 10) 포트 매핑 접속 증거
@@ -413,6 +423,7 @@ hi
 컨테이너 `vol-test`를 삭제한 뒤 새 컨테이너 `vol-test2`에 같은 볼륨 `mydata`를 연결했다. `/data/hello.txt` 내용이 그대로 유지되어 Docker 볼륨의 영속성을 이 노트북에서도 재확인했다.
 
 ### 12-1) 바인드 마운트 vs Docker 볼륨
+
 - **바인드 마운트**는 **호스트의 특정 경로를 직접 지정**해서 컨테이너 내부 경로에 연결한다. 호스트 파일을 직접 수정하면 컨테이너 재시작 없이 즉시 반영됨을 §11에서 확인했다. 데이터의 실체가 호스트 파일 시스템 그 자체이므로, 컨테이너를 삭제해도 그 호스트 경로의 파일은 당연히 그대로 남는다.
 - **Docker 볼륨**은 호스트 경로를 사람이 직접 지정하지 않고, **Docker가 자체적으로 관리하는 저장 영역**에 데이터를 둔다. 컨테이너를 삭제해도 볼륨 자체는 Docker가 별도로 보관하고 있어, 새 컨테이너에 같은 볼륨을 연결하면 데이터가 유지됨을 본 섹션에서 확인했다.
 - 핵심 차이는 "삭제 후에도 데이터가 남는지" 여부가 아니라(둘 다 남는다), **데이터가 저장되는 위치를 사용자가 직접 지정하는가(바인드 마운트) 아니면 Docker가 관리하는가(볼륨)**에 있다. 바인드 마운트는 호스트와의 실시간 동기화·공유에 적합하고, 볼륨은 컨테이너 환경과 분리된 Docker 전용 데이터 저장에 적합하다.
@@ -437,6 +448,7 @@ core.logallrefupdates=true
 ```
 
 ### 13-1) Git과 GitHub의 역할 차이
+
 - **Git**은 로컬 컴퓨터에서 파일 변경 이력을 관리하는 버전 관리 도구다. `git config`, `git add`, `git commit`은 모두 로컬에서 동작한다.
 - **GitHub**는 이 Git 저장소를 원격에 호스팅하고 협업(Pull Request, Issue 등)을 지원하는 플랫폼이다. 로컬 저장소를 GitHub에 올리려면 `git remote add origin ...`, `git push`처럼 원격 연동 과정이 추가로 필요하다.
 
@@ -467,22 +479,47 @@ VSCode 계정 메뉴에 `jinho1017-eng (GitHub)` 계정이 로그인되어 있�
 ## 14) 트러블슈팅
 
 ### #1. WSL2 Ubuntu 설치 중 비밀번호 불일치 에러
+
 - 문제: `wsl --install -d Ubuntu` 진행 중 `New password` / `Retype new password` 입력 시 `Sorry, passwords do not match` 에러 발생
 - 원인 가설: 두 번 입력한 비밀번호가 실제로 일치하지 않았음. 리눅스 터미널은 비밀번호 입력 시 화면에 아무 표시가 없어 오타를 인지하기 어려움
 - 확인: `Try again? [y/N]` 프롬프트에서 `y` 입력 후 재시도
 - 해결: 비밀번호를 신중히 재입력하여 `passwd updated successfully` 확인 후 정상 진행
 
 ### #2. Dockerfile COPY 경로 오타로 인한 콘텐츠 미반영
+
 - 문제: `COPY site/ /user/share/nginx/html`로 작성함 (`usr` → `user` 오타)
 - 원인 가설: nginx의 실제 정적 콘텐츠 경로는 `/usr/share/nginx/html`인데, 오타로 인해 엉뚱한 경로(`/user/...`)에 파일이 복사됨
 - 확인: `cat Dockerfile`로 `COPY` 경로를 재확인하여 오타 발견
 - 해결: `/usr/share/nginx/html`로 정정 후 이미지를 재빌드하여 정상 동작 확인
 
 ### #3. nano 저장 과정에서 의도치 않은 파일 생성
+
 - 문제: `nano Dockerfile` 작성 후 저장 시 `Ctrl + O` → 파일명 확인 단계에서 엔터 대신 `Y`를 한 번 더 입력하여 `y`라는 이름의 엉뚱한 파일이 생성됨
 - 원인 가설: nano는 저장 시 파일명을 다시 확인하는 단계가 있는데, 이 단계에서 입력한 문자가 그대로 파일명으로 들어간 것으로 추정됨 (정확한 내부 동작은 추가 확인 필요)
 - 확인: `ls -la`로 `y`라는 파일이 존재함을 확인
 - 해결: `rm y`로 삭제 후, 저장 시 파일명 확인 단계에서 엔터만 입력하도록 재작성
+
+### 참고: 포트 충돌 진단 및 해결 절차
+
+본 프로젝트에서 실제로 포트 충돌을 겪지는 않았지만, 재현 환경에 따라 발생할 수 있어 참고용으로 기록한다.
+
+Docker 컨테이너 실행 시 `-p` 옵션의 호스트 포트가 이미 다른 프로세스에서 사용 중이면 "port is already allocated" 같은 에러가 발생한다.
+
+1. **WSL2(Ubuntu)에서 포트 점유 프로세스 확인**
+   ```bash
+   sudo lsof -i :8090
+   # 또는
+   ss -ltnp | grep 8090
+   ```
+
+2. **Windows(호스트)에서 확인**
+   ```powershell
+   netstat -ano | findstr :8090
+   ```
+   마지막 열의 PID로 `tasklist /FI "PID eq <PID>"` 실행하면 어떤 프로그램인지 확인 가능.
+3. **해결 방법**
+   - 불필요한 컨테이너/프로세스라면 종료: `docker stop <컨테이너명>` 또는 `taskkill /PID <PID> /F`
+   - 또는 다른 호스트 포트로 변경해 실행: 예) `-p 8093:80`
 
 ## 15) 재현 절차 (Reproduction)
 
@@ -508,17 +545,17 @@ curl http://localhost:8090
 
 아래 항목들은 최초 제출본에서 증거가 부족했던 부분으로, 이 노트북에서 모두 재실행하여 보완했다. 실행 결과는 각 항목이 표시된 섹션에 직접 반영했다.
 
-| 항목 | 반영 위치 |
-|---|---|
-| 이미지 다운로드(`docker pull`) 로그 | §8-4 |
-| 컨테이너 중지(`docker stop`) 전/후 비교 | §8-4 |
-| Ubuntu 컨테이너 대화형 셸 진입 | §8-5 |
-| 컨테이너 종료/유지(exec 셸 종료 vs 주 프로세스 종료) 비교 | §8-6 |
-| GitHub 연동 스크린샷 재캡처 | §13-2 |
-| GitHub push 동기화 확인 | §13-1 |
-| 포트 매핑 2회 접속 스크린샷 재촬영 | §10 |
-| 바인드 마운트 재검증 | §11 |
-| 볼륨 영속성 재검증 | §12 |
+| 항목                                                      | 반영 위치 |
+| --------------------------------------------------------- | --------- |
+| 이미지 다운로드(`docker pull`) 로그                     | §8-4     |
+| 컨테이너 중지(`docker stop`) 전/후 비교                 | §8-4     |
+| Ubuntu 컨테이너 대화형 셸 진입                            | §8-5     |
+| 컨테이너 종료/유지(exec 셸 종료 vs 주 프로세스 종료) 비교 | §8-6     |
+| GitHub 연동 스크린샷 재캡처                               | §13-2    |
+| GitHub push 동기화 확인                                   | §13-1    |
+| 포트 매핑 2회 접속 스크린샷 재촬영                        | §10      |
+| 바인드 마운트 재검증                                      | §11      |
+| 볼륨 영속성 재검증                                        | §12      |
 
 ## 17) 프로젝트 구조
 
@@ -686,6 +723,7 @@ Your public key has been saved in /home/wlsgh/.ssh/codyssey_key.pub
 The key fingerprint is:
 SHA256:QbrlN2UE2aQPMdqHks7eT5UyMd52iboekQXHG7GEyNw jinhog177@g***.com
 ```
+
 (§13과 동일한 기준으로 이메일 일부를 마스킹했다. 실제 명령 실행 시에는 전체 이메일을 입력했다.)
 
 공개키(`~/.ssh/codyssey_key.pub`)를 GitHub(Settings → SSH and GPG keys)에 등록한 뒤 인증을 확인했다.
@@ -709,6 +747,7 @@ Everything up-to-date
 > 개인키(`~/.ssh/codyssey_key`)는 저장소 밖에 생성·보관했다. Git 이력 전체는 별도로 검사하지 않았다. 위에 적은 fingerprint와 공개키 값은 공개해도 안전한 정보다.
 
 ## 19) 참고
+
 - 모든 작업은 WSL2(Ubuntu) 터미널 기반 CLI로 수행했다.
 - 브라우저 접속 스크린샷과 VSCode-GitHub 연동 스크린샷은 `docs/` 폴더에 포함되어 있다.
 - 보너스 과제(Docker Compose 기초/멀티 컨테이너/운영 명령어, 환경변수 활용, GitHub SSH 키 설정)는 §18에 모두 포함했다.
