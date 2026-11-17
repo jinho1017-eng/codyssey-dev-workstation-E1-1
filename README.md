@@ -24,7 +24,9 @@
 
 ## 1) 프로젝트 개요
 
-터미널 기본 조작과 파일 권한을 익히고, WSL2(Ubuntu) 환경에서 Docker를 설치·점검한 뒤 nginx 기반 커스텀 웹서버 이미지를 제작했다. 포트 매핑, 바인드 마운트, 볼륨 영속성을 직접 실행 결과로 검증했다. Git 사용자 설정과 GitHub 연동까지 포함해, 코드가 "내 컴퓨터에서만" 동작하는 문제를 줄이고 재현 가능한 개발 환경을 구성하는 것을 목표로 했다.
+터미널 기본 조작과 파일 권한을 익히고, WSL2(Windows 안에서 Linux를 실행하게 해주는 기능)의 Ubuntu 환경에서 Docker를 설치·점검한 뒤 nginx 기반 커스텀 웹서버 이미지를 제작했다. 포트 매핑, 바인드 마운트, 볼륨 영속성을 직접 실행 결과로 검증했다. Git 사용자 설정과 GitHub 연동까지 포함해, 코드가 "내 컴퓨터에서만" 동작하는 문제를 줄이고 재현 가능한 개발 환경을 구성하는 것을 목표로 했다.
+
+> 발표 자료: [docs/E1-1-presentation.pdf](./docs/E1-1-presentation.pdf)
 
 ## 2) 실행 환경
 
@@ -35,7 +37,7 @@
 - Git: 2.53.0
 - 터미널 애플리케이션: **Ubuntu 앱(Microsoft Store 배포판 전용 터미널)**
 
-> **환경 확정**: §6~§13의 재현 실습 로그는 Windows 노트북에서 **Docker Desktop(WSL2 Integration)** 을 통해 Ubuntu WSL 배포판의 `docker` CLI로 수행한 결과다. WSL2를 활성화하고(`wsl --install`), Docker Desktop을 D드라이브에 설치한 뒤(`--installation-dir=D:\Docker --wsl-default-data-root=D:\DockerData`), Ubuntu 배포판을 기본값으로 지정(`wsl --set-default Ubuntu`)하고 Docker Desktop 설정에서 WSL Integration을 켜서 연동했다. §5의 `docker info` 출력에서 `Operating System: Docker Desktop`, `Name: docker-desktop`으로 이 사실이 직접 확인된다. 최초 README의 "Docker Engine - Community" 표기는 다른(클라우드) 환경에서의 기록이며, 본 재현 작업과는 별개 환경이다.
+> **환경 확정**: §6~§13의 재현 실습 로그는 Windows 노트북에서 **Docker Desktop(WSL2 Integration)** 을 통해 Ubuntu WSL 배포판의 `docker` CLI로 수행한 결과다. WSL2를 활성화하고(`wsl --install`), Docker Desktop을 D드라이브에 설치한 뒤(`--installation-dir=D:\Docker --wsl-default-data-root=D:\DockerData`), Ubuntu 배포판을 기본값으로 지정(`wsl --set-default Ubuntu`)하고 Docker Desktop 설정에서 WSL Integration을 켜서 연동했다. §5의 `docker info` 출력에서 `Operating System: Docker Desktop`, `Name: docker-desktop`이 확인되어, Ubuntu 터미널이 Docker Desktop 서버에 연결됐음을 알 수 있다. 최초 README의 "Docker Engine - Community" 표기는 다른(클라우드) 환경에서의 기록이며, 본 재현 작업과는 별개 환경이다.
 
 ## 3) 수행 체크리스트
 
@@ -69,12 +71,12 @@
 
 | 요구 항목                            | 검증 명령                                                               | 결과 위치                                                                                                            |
 | ------------------------------------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| 터미널 기본 조작                     | `pwd`, `ls -la`, `cd`, `cp`, `mv`, `cat`, `touch`, `rm` | [§6](#6-터미널-기본-조작-로그)                                                                                       |
-| 파일/디렉토리 권한 변경              | `chmod 600`/`700` 전/후 `ls -l`                                   | [§7](#7-권한-실습-변경-전후)                                                                                         |
-| Docker 버전/데몬 점검                | `docker --version`, `docker info`                                   | [§5](#5-dockergit-설치-점검)                                                                                         |
-| 이미지 목록 확인                     | `docker images`                                                       | [§8](#8-docker-기본-운영-명령--컨테이너-실행)                                                                        |
-| 컨테이너 목록/로그/리소스            | `docker ps -a`, `docker logs`, `docker stats`                     | [§8](#8-docker-기본-운영-명령--컨테이너-실행)                                                                        |
-| hello-world 실행                     | `docker run hello-world`                                              | [§8](#8-docker-기본-운영-명령--컨테이너-실행)                                                                        |
+| 터미널 기본 조작                     | `pwd`, `ls -la`, `cd`, `cp`, `mv`, `cat`, `touch`, `rm` | [§6](#6-터미널-기본-조작-로그), [basic](./docs/terminal-basic.png), [cp·mv](./docs/terminal-copy-move.png), [edit·rm](./docs/terminal-edit-delete.png) |
+| 파일/디렉토리 권한 변경              | `chmod 600`/`700` 전/후 `ls -l`                                   | [§7](#7-권한-실습-변경-전후), [파일](./docs/terminal-chmod-file.png), [디렉터리](./docs/terminal-chmod-dir.png), [x 권한](./docs/terminal-dir-x.png) |
+| Docker 버전/데몬 점검                | `docker --version`, `docker info`                                   | [§5](#5-dockergit-설치-점검), [docker-version.png](./docs/docker-version.png) |
+| 이미지 목록 확인                     | `docker images`                                                       | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록), [docker-pull-images.png](./docs/docker-pull-images.png) |
+| 컨테이너 목록/로그/리소스            | `docker ps -a`, `docker logs`, `docker stats`                     | [§8](#8-docker-기본-운영-명령--컨테이너-실행), [logs](./docs/docker-ubuntu-logs.png), [stats](./docs/docker-stats.png) |
+| hello-world 실행                     | `docker run hello-world`                                              | [§8](#8-docker-기본-운영-명령--컨테이너-실행), [docker-hello.png](./docs/docker-hello.png) |
 | 커스텀 이미지 빌드                   | `docker build`                                                        | [§9](#9-커스텀-웹서버-dockerfile-기존-nginx-베이스-활용)                                                             |
 | 커스텀 이미지 컨테이너 실행          | `docker run -d -p ...`                                                | [§10](#10-포트-매핑-접속-증거)                                                                                       |
 | 포트 매핑 접속                       | 브라우저 `localhost:8090`, `localhost:8091`                         | [§10](#10-포트-매핑-접속-증거), [docs/port-8090.png](./docs/port-8090.png), [docs/port-8091.png](./docs/port-8091.png) |
@@ -82,10 +84,10 @@
 | 볼륨 영속성                          | 컨테이너 재생성 후 `cat /data/hello.txt`                              | [§12](#12-docker-볼륨-영속성-검증)                                                                                   |
 | Git 설정                             | `git config --list`                                                   | [§13](#13-git-설정)                                                                                                  |
 | GitHub 연동                          | VSCode 계정 패널 스크린샷                                               | [docs/vscode-github.png](./docs/vscode-github.png)                                                                    |
-| 이미지 다운로드(pull)                | `docker pull ubuntu`                                                  | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록)                                                             |
-| 컨테이너 중지                        | `docker stop stop-test`                                               | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록)                                                             |
-| 대화형 셸 진입                       | `docker run -it ubuntu bash`                                          | [§8-5](#8-5-ubuntu-컨테이너-대화형-셸-진입)                                                                          |
-| 종료 방식 차이                       | `docker exec` 셸 종료 vs `docker stop`                              | [§8-6](#8-6-컨테이너-종료유지--exec-셸-종료-vs-주-프로세스-종료-비교)                                                |
+| 이미지 다운로드(pull)                | `docker pull ubuntu`                                                  | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록), [docker-pull-images.png](./docs/docker-pull-images.png) |
+| 컨테이너 중지                        | `docker stop stop-test`                                               | [§8-4](#8-4-이미지-다운로드pull--컨테이너-중지stop-기록), [docker-stop.png](./docs/docker-stop.png) |
+| 대화형 셸 진입                       | `docker run -it ubuntu bash`                                          | [§8-5](#8-5-ubuntu-컨테이너-대화형-셸-진입), [docker-it.png](./docs/docker-it.png) |
+| 종료 방식 차이                       | `docker exec` 셸 종료 vs `docker stop`                              | [§8-6](#8-6-컨테이너-종료유지--exec-셸-종료-vs-주-프로세스-종료-비교), [docker-exec-stop.png](./docs/docker-exec-stop.png) |
 | GitHub push 동기화 확인              | `git remote -v`, `git fetch origin`, `git status -sb`             | [§13-1](#13-1-git과-github의-역할-차이)                                                                              |
 | Compose 기초(단일 서비스)            | `docker compose up -d web`                                            | [§18-1](#18-1-docker-compose-기초)                                                                                   |
 | Compose 멀티 컨테이너(네트워크 통신) | `docker compose exec helper wget -qO- http://web`                     | [§18-2](#18-2-docker-compose-멀티-컨테이너)                                                                          |
@@ -95,6 +97,10 @@
 
 ## 5) Docker/Git 설치 점검
 
+WSL Ubuntu 터미널에서 Docker와 Git의 버전을 확인했다. `docker info` 출력은 `grep -E`로 필요한 항목을 골라 봤다. `|`(파이프)는 앞 명령의 출력을 뒤 명령으로 넘기는 기호이고, `grep -E "A|B"`는 그 출력에서 A 또는 B가 들어간 줄만 보여준다. `docker info`는 출력이 길어서 이렇게 걸러서 확인했다.
+
+실습 로그에서 `$` 뒤는 터미널에 입력한 명령이고, `...`는 출력 일부를 생략했다는 표시다.
+
 ```bash
 $ docker --version
 Docker version 29.9.2, build a82e528
@@ -102,213 +108,304 @@ Docker version 29.9.2, build a82e528
 $ git --version
 git version 2.53.0
 
-$ docker info
-Server:
- Containers: 8
-  Running: 4
+$ docker info | grep -E "Containers|Running|Paused|Stopped|Images|Server Version|CPUs|Total Memory|Operating System|Name:"
+dhi: CLI for managing Docker Hardened Images (Docker Inc.)
+ Containers: 7
+  Running: 0
   Paused: 0
-  Stopped: 4
- Images: 4
+  Stopped: 7
+ Images: 5
  Server Version: 29.9.2
- Storage Driver: overlayfs
- Logging Driver: json-file
- Cgroup Driver: cgroupfs
- Cgroup Version: 2
- Kernel Version: 6.18.54.1-microsoft-standard-WSL2
  Operating System: Docker Desktop
- OSType: linux
- Architecture: x86_64
  CPUs: 8
  Total Memory: 7.463GiB
  Name: docker-desktop
- Docker Root Dir: /var/lib/docker
- Debug Mode: false
 ```
 
-(위는 이 노트북에서 재실행한 결과이며, 길이가 긴 출력 중 핵심 라인만 발췌했다. `Operating System: Docker Desktop`, `Name: docker-desktop`을 통해 이 환경이 Docker Desktop(WSL Integration)임이 직접 확인된다.)
+`docker --version`으로 Docker CLI의 버전을 확인했고, `docker info`에서 `Server Version`과 `Name: docker-desktop`이 나온 것을 보고 WSL Ubuntu 터미널에서 Docker Desktop 서버에 연결됐음을 확인했다. 컨테이너와 이미지 개수는 실습 당시의 값이다.
+
+`dhi` 안내 줄은 `Images`라는 단어가 `grep -E` 필터에 걸려 함께 표시됐다.
 
 ## 6) 터미널 기본 조작 로그
 
+`whoami`로 현재 사용자를 확인했다. 홈 디렉터리에 `practice`를 만들고 들어간 뒤, `pwd`로 현재 경로를 확인했다. `touch`로 만든 `a.txt`는 `ls -la`에서 크기가 0바이트로 표시됐다.
+
+`ls -la`에서 `-l`은 권한·소유자·크기·시각 같은 자세한 정보를, `-a`는 `.`으로 시작하는 숨김 항목까지 보여준다. 목록에 나오는 `.`은 현재 폴더, `..`은 상위 폴더를 뜻한다.
+
 ```bash
+$ cd ~
+$ whoami
+wlsgh
+
 $ mkdir practice
 $ cd practice
-
 $ pwd
-/home/wlsgh171704620/codyssey-dev-workstation/practice
+/home/wlsgh/practice
 
 $ touch a.txt
-
 $ ls -la
 total 8
-drwxr-xr-x 2 wlsgh171704620 wlsgh171704620 4096 Nov  3 11:22 .
-drwxr-xr-x 4 wlsgh171704620 wlsgh171704620 4096 Nov  3 11:21 ..
--rw-r--r-- 1 wlsgh171704620 wlsgh171704620    0 Nov  3 11:22 a.txt
+drwxr-xr-x 2 wlsgh wlsgh 4096 Nov 17 18:01 .
+drwxr-x--- 9 wlsgh wlsgh 4096 Nov 17 18:01 ..
+-rw-r--r-- 1 wlsgh wlsgh 0 Nov 17 18:01 a.txt
+```
 
+이어지는 목록의 `a.txt` 시각이 `18:05`인 것은, 같은 실습을 이어가려고 `practice` 폴더와 `a.txt`를 다시 만들었기 때문이다. `cp`로 복사했을 때는 원본과 복사본이 모두 남았다. 이어서 `mv`를 실행하자 `b.txt`가 `c.txt`로 바뀌었다.
+
+```bash
 $ cp a.txt b.txt
-$ mv b.txt c.txt
-$ cat a.txt
-$ touch empty.txt
-$ rm c.txt
-
 $ ls -la
-total 8
-drwxr-xr-x 2 wlsgh171704620 wlsgh171704620 4096 Nov  3 11:22 .
-drwxr-xr-x 4 wlsgh171704620 wlsgh171704620 4096 Nov  3 11:21 ..
--rw-r--r-- 1 wlsgh171704620 wlsgh171704620    0 Nov  3 11:22 a.txt
--rw-r--r-- 1 wlsgh171704620 wlsgh171704620    0 Nov  3 11:22 empty.txt
+...
+-rw-r--r-- 1 wlsgh wlsgh 0 Nov 17 18:05 a.txt
+-rw-r--r-- 1 wlsgh wlsgh 0 Nov 17 18:05 b.txt
+
+$ mv b.txt c.txt
+$ ls -la
+...
+-rw-r--r-- 1 wlsgh wlsgh 0 Nov 17 18:05 a.txt
+-rw-r--r-- 1 wlsgh wlsgh 0 Nov 17 18:05 c.txt
+```
+
+`>`로 `echo`의 출력을 `a.txt`에 기록하고 `cat`으로 내용을 읽었다. 빈 파일 `empty.txt`를 만든 뒤 `rm`으로 `c.txt`를 지우고, 마지막 목록에서 삭제 결과를 확인했다.
+
+```bash
+$ echo "hello"> a.txt
+$ cat a.txt
+hello
+
+$ touch empty.txt
+$ ls -la
+...
+-rw-r--r-- 1 wlsgh wlsgh 6 Nov 17 18:06 a.txt
+-rw-r--r-- 1 wlsgh wlsgh 0 Nov 17 18:05 c.txt
+-rw-r--r-- 1 wlsgh wlsgh 0 Nov 17 18:06 empty.txt
+
+$ rm c.txt
+$ ls -la
+...
+-rw-r--r-- 1 wlsgh wlsgh 6 Nov 17 18:06 a.txt
+-rw-r--r-- 1 wlsgh wlsgh 0 Nov 17 18:06 empty.txt
 ```
 
 ### 6-1) 절대 경로 vs 상대 경로
 
-- 위 로그에서 `pwd`가 출력한 `/home/wlsgh171704620/codyssey-dev-workstation/practice`는 루트(`/`)부터 시작하는 **절대 경로**다. 항상 같은 위치를 가리킨다.
-- 반면 `cd practice`, `cat a.txt`처럼 현재 위치를 기준으로 쓴 경로는 **상대 경로**다. 예를 들어 `practice` 디렉토리 안에서 `cat a.txt`를 실행하면 실제로는 `/home/.../codyssey-dev-workstation/practice/a.txt`를 가리키지만, 현재 위치가 바뀌면 같은 `a.txt`라는 상대 경로도 다른 파일을 가리킬 수 있다.
+`pwd`가 출력한 `/home/wlsgh/practice`는 루트(`/`)부터 시작하는 **절대 경로**다. `cat a.txt`의 `a.txt`는 현재 위치를 기준으로 찾는 **상대 경로**다. `practice` 안에서 실행했기 때문에 실제로 읽은 파일은 `/home/wlsgh/practice/a.txt`였다.
 
 ## 7) 권한 실습 (변경 전/후)
 
+`chmod`는 파일이나 디렉터리의 권한을 바꾸는 명령이다. `chmod 600`을 적용하기 전과 후에 `ls -l a.txt`로 파일 권한을 확인했다.
+
 ```bash
-# 파일 권한 변경 전
 $ ls -l a.txt
--rw-r--r-- 1 wlsgh171704620 wlsgh171704620 0 Nov  3 11:22 a.txt
+-rw-r--r-- 1 wlsgh wlsgh 6 Nov 17 18:06 a.txt
 
-# 파일 권한 변경
 $ chmod 600 a.txt
-
-# 파일 권한 변경 후
 $ ls -l a.txt
--rw------- 1 wlsgh171704620 wlsgh171704620 0 Nov  3 11:22 a.txt
+-rw------- 1 wlsgh wlsgh 6 Nov 17 18:06 a.txt
+```
 
-# 디렉토리 권한 변경 전
+변경 후에는 소유자에게만 읽기와 쓰기 권한이 남았다.
+
+디렉터리 자체의 권한은 `ls -ld testdir`로 확인했다. `chmod 700` 적용 후에는 소유자에게만 읽기·쓰기·탐색 권한이 남았다.
+
+```bash
 $ mkdir testdir
 $ ls -ld testdir
-drwxr-xr-x 2 wlsgh171704620 wlsgh171704620 4096 Nov  3 11:23 testdir
+drwxr-xr-x 2 wlsgh wlsgh 4096 Nov 17 18:15 testdir
 
-# 디렉토리 권한 변경
 $ chmod 700 testdir
-
-# 디렉토리 권한 변경 후
 $ ls -ld testdir
-drwx------ 2 wlsgh171704620 wlsgh171704620 4096 Nov  3 11:23 testdir
+drwx------ 2 wlsgh wlsgh 4096 Nov 17 18:15 testdir
 ```
 
 ### 7-1) 권한 표기 설명
 
-- 권한은 `r(읽기)=4`, `w(쓰기)=2`, `x(실행/탐색)=1`의 합으로 숫자 하나에 표현된다. 자릿수는 순서대로 **소유자 / 그룹 / 기타 사용자**다.
-- `755` = 소유자 `rwx`(7) · 그룹 `r-x`(5) · 기타 `r-x`(5) — 소유자만 쓰기 가능, 나머지는 읽기/실행만 가능
-- `644` = 소유자 `rw-`(6) · 그룹 `r--`(4) · 기타 `r--`(4) — 일반 파일에 흔히 쓰는 조합
-- `600` (본 실습의 `a.txt`) = 소유자만 `rw-`, 그룹/기타는 완전 차단
-- `700` (본 실습의 `testdir`) = 소유자만 `rwx`, 그룹/기타는 완전 차단
-- 디렉토리의 `x`는 "내부 목록을 보는 권한(`r`)"과는 별개로, **그 디렉토리 안으로 들어가거나(`cd`) 내부 파일에 실제로 접근하기 위한 권한**이다. `r`만 있고 `x`가 없으면 `ls`로 이름은 보여도 `cd`나 파일 열람은 거부된다.
+권한의 세 자리는 **소유자 / 그룹 / 기타 사용자** 순서다. 각 숫자는 `r`(읽기) 4, `w`(쓰기) 2, `x`(실행 또는 탐색) 1을 더해서 계산한다.
+
+`ls -l`로 보이는 `-rw-r--r--`는 첫 글자가 종류(`-`는 파일, `d`는 디렉터리)이고, 이어지는 9글자를 3글자씩 끊어 소유자·그룹·기타 사용자의 `r`/`w`/`x` 권한으로 읽는다. 예를 들어 `-rw-------`는 소유자만 읽고 쓸 수 있는 파일(`600`)이다.
+
+| 숫자    | 소유자  | 그룹    | 기타 사용자 |
+| ------- | ------- | ------- | ----------- |
+| `755` | `rwx` | `r-x` | `r-x`     |
+| `644` | `rw-` | `r--` | `r--`     |
+| `600` | `rw-` | `---` | `---`     |
+| `700` | `rwx` | `---` | `---`     |
+
+디렉터리에서 `x`는 안으로 들어가거나 내부 경로에 접근하는 **탐색 권한**이다. 같은 디렉터리에 `600`과 `700`을 차례로 적용하고 `cd` 결과를 비교했다.
+
+```bash
+$ chmod 600 testdir
+$ ls -ld testdir
+drw------- 2 wlsgh wlsgh 4096 Nov 17 18:15 testdir
+$ cd testdir
+-bash: cd: testdir: Permission denied
+
+$ chmod 700 testdir
+$ ls -ld testdir
+drwx------ 2 wlsgh wlsgh 4096 Nov 17 18:15 testdir
+$ cd testdir
+$ pwd
+/home/wlsgh/practice/testdir
+$ cd ..
+```
+
+`600`에서는 소유자에게도 `x` 권한이 없어 진입이 거부됐다. `700`으로 바꾸자 소유자에게 `x`가 추가돼 `cd`가 성공했다.
 
 ## 8) Docker 기본 운영 명령 + 컨테이너 실행
 
-```bash
-$ docker images
-IMAGE                ID             DISK USAGE
-hello-world:latest   c567b231f656   25.9kB
-ubuntu:latest        6a06111c3b0a   163MB
+`docker run hello-world`로 테스트 컨테이너를 실행해 Docker가 컨테이너를 실행하고 출력을 터미널에 전달하는지 확인했다.
 
+```bash
 $ docker run hello-world
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
+...
+```
 
-$ docker run --name ubuntu-test ubuntu bash -c "ls / && echo hello-from-container"
+Ubuntu 컨테이너에서는 `bash -c`로 명령을 실행했다. `docker logs`에서 컨테이너의 출력을 읽고, `docker ps -a`에서 종료 상태를 확인했다.
+
+```bash
+$ docker run -d --name ubuntu-test ubuntu bash -c "ls / && echo hello-from-container"
+...
 
 $ docker logs ubuntu-test
-bin boot dev etc home lib lib64 media mnt opt proc root run sbin srv sys tmp usr var
+bin
+boot
+dev
+...
 hello-from-container
 
 $ docker ps -a
-CONTAINER ID   IMAGE         STATUS                      NAMES
-76c37810b255   ubuntu        Exited (0) 21 minutes ago   ubuntu-test
-b94006c3693c   hello-world   Exited (0) 21 minutes ago   adoring_elion
+CONTAINER ID   IMAGE          ...   STATUS                        ...   NAMES
+530f50f2f17f   ubuntu         ...   Exited (0) 13 seconds ago     ...   ubuntu-test
+6adcb6f04b94   hello-world    ...   Exited (0) 12 minutes ago     ...   elegant_roentgen
+...
+daf5ac96c5c2   6a06111c3b0a   ...   Exited (255) 13 days ago      ...   vol-test2
+...
+3685044b6bae   6a06111c3b0a   ...   Exited (0) 2 weeks ago        ...   ubuntu-interactive
+...
+```
 
+`hello-from-container`가 로그에 남았고 상태는 `Exited (0)`이었다. 종료 코드 `0`은 주 명령이 정상적으로 끝났다는 뜻이다.
+
+`docker ps -a`의 `-a`는 실행 중인 컨테이너뿐 아니라 종료된 컨테이너까지 모두 보여주는 옵션이다. `-a`가 없으면 실행 중인 컨테이너만 나온다.
+
+`docker ps -a` 원본 출력에는 컨테이너 9개가 표시됐으며, 위에는 설명에 필요한 행을 발췌했다. §5의 `docker info`에서 확인한 7개는 해당 명령을 실행했을 때의 기록이다. `docker info`는 `hello-world`를 실행하기 전에 확인해 컨테이너가 7개였고, 이후 만든 `elegant_roentgen`과 `ubuntu-test`를 더하면 `docker ps -a`의 9개가 된다.
+
+`vol-test2`는 `Exited (255)`로 표시됐다. 이번 실습에서는 목록에서 종료 코드만 확인했으므로, `vol-test2`가 어떤 이유로 종료됐는지는 확인하지 못했다. `compose-web`, `my-nginx-2`, `my-nginx-bind`, `my-nginx`도 같은 시기에 `Exited (255)`로 표시됐다.
+
+`elegant_roentgen`은 `docker run hello-world`를 실행할 때 이름을 지정하지 않아 Docker가 자동으로 붙인 이름이다. `docker pull ubuntu`(§8-4)로 최신 이미지를 내려받아도 이미 만들어 둔 `vol-test2`와 `ubuntu-interactive`는 처음 사용한 이미지를 계속 참조하므로, `IMAGE` 열에 이전 이미지 ID인 `6a06111c3b0a`가 표시됐다.
+
+자원 사용량은 `sleep 300`으로 컨테이너를 실행 상태로 유지한 뒤 확인했다. `docker stats --no-stream`은 CPU와 메모리 사용량을 한 번 출력한다.
+
+```bash
 $ docker run -d --name stats-test2 ubuntu sleep 300
+...
+
 $ docker stats --no-stream
-CONTAINER ID   NAME          CPU %   MEM USAGE / LIMIT    MEM %
-ad1bcb259852   stats-test2   0.00%   3.02MiB / 15.25GiB   0.02%
+CONTAINER ID   NAME          CPU %   MEM USAGE / LIMIT    MEM %   ...
+8a45adaf19ea   stats-test2   0.00%   2.5MiB / 7.463GiB    0.03%   ...
 ```
 
 ### 8-1) 이미지 vs 컨테이너
 
-**이미지**는 실행에 필요한 파일/설정을 담은 변경 불가능한 템플릿이고, **컨테이너**는 그 이미지를 기반으로 실제 실행된 격리 프로세스다. 하나의 이미지로 여러 컨테이너를 동시에 띄울 수 있다 (실제로 본 실습에서도 `my-custom-nginx:1.0` 이미지 하나로 `my-nginx`, `my-nginx-2` 두 컨테이너를 각각 실행했다, §10).
+**이미지**는 실행에 필요한 파일과 설정을 담은 템플릿이고, **컨테이너**는 그 이미지에서 만들어진 실행 단위다. §10에서는 `my-custom-nginx:1.0` 이미지 하나로 `my-nginx`와 `my-nginx-2` 컨테이너를 각각 실행했다.
 
 ### 8-2) 백그라운드 실행과 컨테이너 생명주기
 
-`-d`는 컨테이너를 백그라운드(detached)로 실행하는 옵션이다. 컨테이너는 **주 프로세스(PID 1)가 종료되면 함께 종료(Exited)**된다. 위 로그에서 `docker run --name ubuntu-test ubuntu bash -c "..."`가 명령을 마치자마자 `Exited` 상태가 된 것이 이 때문이고, 반대로 `sleep 300`처럼 즉시 끝나지 않는 프로세스를 주 프로세스로 실행하면 컨테이너는 `Up` 상태를 유지한다.
+`-d`는 컨테이너를 백그라운드에서 실행하는 옵션이다. 컨테이너는 주 프로세스가 실행되는 동안 유지된다. 여기서 주 프로세스는 컨테이너가 시작될 때 처음 실행되는 명령(`bash -c ...`, `sleep 300`, nginx 등)을 뜻한다. `ubuntu-test`는 `bash -c`의 명령을 마친 뒤 종료됐고, `stats-test2`는 `sleep 300`으로 300초 동안 대기하는 사이 자원 사용량을 조회할 수 있었다.
 
 ### 8-3) docker exec
 
-`docker exec`는 **이미 실행 중인 컨테이너 내부에 별도의 추가 프로세스를 실행**하는 명령이다. 주 프로세스와 독립적이므로, `docker exec`로 연 셸을 종료해도 컨테이너의 주 프로세스가 살아있다면 컨테이너 자체는 계속 실행 상태를 유지한다. (직접 비교 실습은 §8-6 참고)
+`docker exec`는 실행 중인 컨테이너 안에서 추가 명령을 실행한다. 추가로 연 셸을 닫아도 주 프로세스가 실행 중이면 컨테이너는 `Up` 상태를 유지한다. §8-6에서 그 차이를 직접 확인했다.
 
 ### 8-4) 이미지 다운로드(pull) + 컨테이너 중지(stop) 기록
+
+`docker pull ubuntu`를 실행해 Ubuntu 이미지를 내려받았다. 태그를 지정하지 않아 기본값인 `latest`가 사용됐고, `docker images` 목록에서 `ubuntu:latest`를 확인했다.
 
 ```bash
 $ docker pull ubuntu
 Using default tag: latest
 latest: Pulling from library/ubuntu
-f3f25b84a7d7: Pull complete
-edafa32f5d9e: Pull complete
-21594acc2d8b: Download complete
-Digest: sha256:6a06111c3b0a8600feadb270aec771dc239bf407b25625f93f44ab00e11f4d3c
+...
 Status: Downloaded newer image for ubuntu:latest
 docker.io/library/ubuntu:latest
+
+$ docker images
+IMAGE           ID             DISK USAGE   CONTENT SIZE   ...
+...
+ubuntu:latest   d66b366dac61   163MB        45.9MB
 ```
+
+컨테이너를 중지하기 전과 후에 `--filter name=stop-test`로 해당 컨테이너만 조회했다. 중지된 컨테이너도 보기 위해 중지 후에는 `docker ps -a`를 사용했다.
 
 ```bash
 $ docker run -d --name stop-test ubuntu sleep 300
-701dcee82b89ef370aed6b7f544297f138daa7ef59922ea0ff2edee1b39f371b
+...
 
-$ docker ps
-CONTAINER ID   IMAGE    COMMAND       CREATED         STATUS          NAMES
-701dcee82b89   ubuntu   "sleep 300"   12 seconds ago  Up 11 seconds   stop-test
+$ docker ps --filter name=stop-test
+CONTAINER ID   IMAGE    COMMAND       ...   STATUS        ...   NAMES
+025e489e124e   ubuntu   "sleep 300"   ...   Up 6 seconds  ...   stop-test
 
 $ docker stop stop-test
 stop-test
 
-$ docker ps -a
-CONTAINER ID   IMAGE    COMMAND       CREATED         STATUS                       NAMES
-701dcee82b89   ubuntu   "sleep 300"   25 seconds ago  Exited (137) 5 seconds ago   stop-test
+$ docker ps -a --filter name=stop-test
+CONTAINER ID   IMAGE    COMMAND       ...   STATUS                       ...   NAMES
+025e489e124e   ubuntu   "sleep 300"   ...   Exited (137) 3 seconds ago  ...   stop-test
 ```
 
-`docker stop`을 실행하자 `Up` 상태였던 컨테이너가 `Exited (137)`로 바뀐 것을 확인했다.
+중지 전 `Up`이었던 `stop-test`가 `docker stop` 실행 후 `Exited (137)`로 바뀌었다.
+
+`Exited (137)`의 숫자는 종료 코드다. 일반적으로 `0`은 정상 종료를 뜻한다. `137`은 128에 신호 번호 9(SIGKILL, 프로세스가 무시할 수 없는 강제 종료 신호)를 더한 값으로, 프로세스가 강제로 종료됐을 때 나타난다. `docker stop`은 일반적으로 먼저 SIGTERM(정리하고 종료하라는 요청)을 보내고, 일정 시간(기본 10초) 안에 끝나지 않으면 SIGKILL로 강제 종료한다. §8-6의 nginx는 `docker stop` 뒤 `Exited (0)`이었다.
+
+`stop-test`는 `sleep 300`이 주 프로세스였고, 일반적으로 이런 단순 프로세스는 SIGTERM에 따로 반응하지 않아 강제 종료까지 가는 경우가 많다. nginx는 SIGTERM을 받으면 스스로 정상 종료하므로 `0`으로 끝난 것으로 보인다. 이 실습에서 종료 신호를 직접 관찰한 것은 아니므로, 위 내용은 일반적인 설명이다.
 
 ### 8-5) Ubuntu 컨테이너 대화형 셸 진입
 
+`-it` 옵션을 사용해 Ubuntu 컨테이너의 Bash에 직접 입력했다. 프롬프트가 `root@…:/#`로 바뀐 뒤 `ls /`와 `echo`를 실행했다. `-i`는 입력을 유지하고 `-t`는 터미널을 연결하는 옵션이라, `-it`를 함께 쓰면 컨테이너 안에서 직접 명령을 입력할 수 있다.
+
 ```bash
 $ docker run -it --name ubuntu-interactive-v2 ubuntu bash
-root@0e9b549be8ac:/# ls /
-bin   dev  home  lib64  mnt   proc  run   srv  tmp  var
-boot  etc  lib   media  opt   root  sbin  sys  usr
-root@0e9b549be8ac:/# echo hello-from-container
+root@f1804d4d9aee:/# ls /
+bin  dev  home  lib64  mnt   proc  run   srv  tmp  var
+boot etc  lib   media  opt   root  sbin  sys  usr
+root@f1804d4d9aee:/# echo hello-from-container
 hello-from-container
-root@0e9b549be8ac:/# exit
+root@f1804d4d9aee:/# exit
 exit
+
+$ docker ps -a --filter name=ubuntu-interactive-v2
+CONTAINER ID   IMAGE    COMMAND   ...   STATUS                     ...   NAMES
+f1804d4d9aee   ubuntu   "bash"    ...   Exited (0) 5 seconds ago   ...   ubuntu-interactive-v2
 ```
 
-프롬프트가 `root@0e9b549be8ac:/#` 형태로 바뀐 것이 컨테이너 내부 대화형 셸에 실제로 진입했다는 증거이며, `ls /`와 `echo hello-from-container`의 실제 출력도 위와 같이 확인했다. `exit`로 셸을 나오자 주 프로세스(bash)가 함께 종료되어 컨테이너도 `Exited` 상태가 되었다.
+이 컨테이너의 주 프로세스는 Bash였다. `exit`으로 Bash를 닫고 WSL Ubuntu 터미널로 돌아온 뒤 컨테이너 상태가 `Exited (0)`인 것을 확인했다.
 
 ### 8-6) 컨테이너 종료/유지 — exec 셸 종료 vs 주 프로세스 종료 비교
 
+nginx를 실행하고 `docker exec`로 추가 셸을 열었다. `inside-exec`를 출력한 뒤 추가 셸을 종료하고 컨테이너 상태를 확인했다. `sh -c "…"`는 `sh` 셸에게 따옴표 안의 명령을 실행하도록 시키는 형태다.
+
 ```bash
 $ docker run -d --name lifecycle-test nginx:alpine
+...
+
 $ docker exec -it lifecycle-test sh -c "echo inside-exec; exit"
 inside-exec
 
-$ docker ps
-CONTAINER ID   IMAGE          COMMAND                   CREATED          STATUS          PORTS     NAMES
-24f6b839c049   nginx:alpine   "/docker-entrypoint.…"    16 seconds ago   Up 15 seconds   80/tcp    lifecycle-test
-```
+$ docker ps --filter name=lifecycle-test
+CONTAINER ID   IMAGE          ...   STATUS          PORTS    NAMES
+ed160c82467c   nginx:alpine   ...   Up 11 seconds   80/tcp   lifecycle-test
 
-`docker exec`로 연 셸을 종료했지만 컨테이너는 여전히 `Up` 상태다. exec 셸 종료가 컨테이너 자체에는 영향을 주지 않음을 확인했다.
-
-```bash
 $ docker stop lifecycle-test
-$ docker ps -a
-CONTAINER ID   IMAGE          COMMAND                   CREATED          STATUS                      PORTS   NAMES
-24f6b839c049   nginx:alpine   "/docker-entrypoint.…"    53 seconds ago   Exited (0) 5 seconds ago            lifecycle-test
+lifecycle-test
+
+$ docker ps -a --filter name=lifecycle-test
+CONTAINER ID   IMAGE          ...   STATUS                     ...   NAMES
+ed160c82467c   nginx:alpine   ...   Exited (0) 6 seconds ago   ...   lifecycle-test
 ```
 
-이번에는 주 프로세스를 직접 종료(`docker stop`)하자 컨테이너가 `Exited`로 바뀌었다. 두 결과를 비교하면, **`docker exec`로 실행한 추가 프로세스의 종료는 컨테이너 상태에 영향을 주지 않지만, 주 프로세스의 종료(또는 `docker stop`)는 컨테이너를 정지시킨다**는 차이가 명확히 드러난다. (`docker stop`은 컨테이너에 설정된 종료 신호(기본 SIGTERM)를 보내고 정해진 유예 시간 내에 종료되지 않으면 SIGKILL로 강제 종료하는 방식이라, "즉시" 멈추는 것은 아니다.)
+추가 셸이 종료된 뒤에도 주 프로세스인 nginx가 실행 중이어서 컨테이너는 `Up` 상태였다. `docker stop`으로 컨테이너를 중지하자 `Exited (0)`으로 바뀌었다. §8-5에서는 Bash 자체가 주 프로세스였기 때문에 `exit`과 함께 컨테이너도 종료됐다.
 
 ## 9) 커스텀 웹서버 Dockerfile (기존 nginx 베이스 활용)
 
@@ -348,6 +445,8 @@ $ docker build -t my-custom-nginx:1.0 .
 
 (위 출력은 실제 빌드 로그 중 핵심 라인만 발췌한 것이며, 레이어 추출 등 세부 라인은 생략했다)
 
+`-t my-custom-nginx:1.0`은 빌드한 이미지에 `my-custom-nginx`라는 이름과 `1.0`이라는 태그를 붙인다. 명령 끝의 `.`은 현재 폴더를 빌드에 사용할 파일의 기준으로 지정한다.
+
 ## 10) 포트 매핑 접속 증거
 
 ```bash
@@ -355,12 +454,16 @@ $ docker run -d -p 8090:80 --name my-nginx my-custom-nginx:1.0
 $ docker run -d -p 8091:80 --name my-nginx-2 my-custom-nginx:1.0
 ```
 
-`-p 8090:80`은 "호스트의 8090번 포트 → 컨테이너의 80번 포트" 연결을 의미한다. 컨테이너는 기본적으로 격리된 네트워크 네임스페이스에 있다. 이번 환경에서는 localhost로 접속하기 위해 포트를 매핑했다 — 포트 매핑으로 호스트와 컨테이너를 연결해야 브라우저(호스트)에서 컨테이너 내부 nginx(80번 포트 대기)에 접근할 수 있다.
+`-p 8090:80`에서 콜론 **앞은 내 컴퓨터(호스트)의 포트, 뒤는 컨테이너 안의 포트**다. 호스트의 8090번 포트로 들어온 요청을 컨테이너의 80번 포트로 전달한다는 뜻이다. 컨테이너는 기본적으로 자기만의 독립된 네트워크를 쓰므로, 이렇게 포트를 연결해야 내 브라우저에서 컨테이너 안 nginx(80번 포트에서 요청을 기다림)에 접속할 수 있다.
 
-브라우저에서 아래 주소로 각각 접속하여 주소창이 포함된 스크린샷을 저장했다 (이 노트북에서 재현한 결과로 교체).
+같은 이미지로 컨테이너를 2개 띄웠는데, 일반적으로 호스트의 포트 하나는 한 번에 하나의 프로그램(컨테이너)만 쓸 수 있다(§14 참고). 그래서 `my-nginx`는 8090, `my-nginx-2`는 8091에 연결했고, 컨테이너 안쪽은 둘 다 80번이다.
+
+브라우저에서 아래 주소로 각각 접속하여 주소창이 포함된 스크린샷을 저장했다.
 
 - `http://localhost:8090` → ![8090 접속](./docs/port-8090.png)
 - `http://localhost:8091` → ![8091 접속](./docs/port-8091.png)
+
+§8의 `docker ps -a` 캡처([docker-ubuntu-logs.png](./docs/docker-ubuntu-logs.png))를 찍은 시점에 `my-nginx`와 `my-nginx-2`는 `Exited (255)` 상태였다. 다시 접속하려면 8090, 8091번 포트를 다른 프로그램이 쓰고 있지 않은지 확인한 뒤(§14 참고) `docker start my-nginx my-nginx-2`로 시작하고 `http://localhost:8090`에 접속한다. `docker start`는 일반적으로 이미 만들어 둔 컨테이너를 다시 켜는 명령이며, 이번에 실행해본 것은 아니다.
 
 > 참고: 화면에 "Updated via bind mount!" 문구가 함께 보이는 이유는, `site/index.html`이 이전(클라우드) 작업에서 바인드 마운트 테스트로 이미 수정된 상태로 git에 커밋되어 있고, 본 노트북에서 그 파일을 그대로 `docker build`에 사용했기 때문이다. 포트 매핑 자체의 접속 성공 여부와는 무관하며, 파일 내용이 그대로 이미지에 반영된 정상적인 결과다.
 
@@ -369,6 +472,10 @@ $ docker run -d -p 8091:80 --name my-nginx-2 my-custom-nginx:1.0
 ```bash
 $ docker run -d -p 8092:80 --name my-nginx-bind -v "$(pwd)/site":/usr/share/nginx/html my-custom-nginx:1.0
 ```
+
+`-v "$(pwd)/site":/usr/share/nginx/html`은 콜론 앞이 호스트 폴더, 뒤가 컨테이너 안 경로다. `$(pwd)`는 명령을 실행하는 현재 폴더의 전체 경로로 바뀌므로, 프로젝트 루트의 `site` 폴더를 nginx의 웹 파일 경로에 연결한다(§12-1 참고).
+
+§10의 컨테이너는 이미지를 만들 때 `COPY`한 파일을 보여준다. 반면 이 컨테이너는 일반적으로 마운트한 경로에 호스트 `site/`의 내용이 보이며, 이미지 안에 있던 파일은 마운트하는 동안 가려진다.
 
 변경 전 (`http://localhost:8092`, 이전 작업에서 추가된 "Updated via bind mount!" 문구까지가 당시 파일 상태):
 
@@ -379,9 +486,13 @@ $ docker run -d -p 8092:80 --name my-nginx-bind -v "$(pwd)/site":/usr/share/ngin
 $ echo "<p>Updated again via bind mount on this laptop!</p>" >> site/index.html
 ```
 
+`>>`는 파일 끝에 내용을 덧붙이는 기호이고, `>`는 파일 내용을 덮어쓴다(§6의 `echo "hello"> a.txt`와 비교). 여기서는 `site/index.html`의 기존 내용을 지우지 않고 끝에 한 줄을 추가했다.
+
 변경 후 — 컨테이너 재시작 없이 새로고침만으로 즉시 반영됨:
 
 ![바인드 마운트 변경 후](./docs/bind-mount-after.png)
+
+변경 전 화면(`Updated via bind mount!` 한 줄)과 비교하면, 변경 후 화면에는 둘째 줄 `Updated again via bind mount on this laptop!`이 새로 나타났다.
 
 바인드 마운트는 호스트 디렉토리를 컨테이너 내부 경로에 직접 연결한다. 컨테이너를 재시작하지 않아도 호스트의 파일 수정 내용이 즉시 컨테이너에 반영됨을 이 노트북에서도 동일하게 재확인했다.
 
@@ -399,6 +510,8 @@ $ echo "<p>Updated again via bind mount on this laptop!</p>" >> site/index.html
 2. 컨테이너를 재시작하지 않고 **브라우저를 새로고침**해서, 바뀐 내용이 바로 반영되는지 확인한다 (바인드 마운트이므로 호스트 파일 수정이 컨테이너에도 즉시 반영된다 — 이 원리 자체는 §11의 기존 실습에서 이미 확인한 것과 동일하다).
 
 ## 12) Docker 볼륨 영속성 검증
+
+`sleep infinity`로 컨테이너를 실행 상태로 유지해 `docker exec`로 안에서 명령을 실행할 수 있게 했다. `docker rm -f vol-test`는 실행 중인 `vol-test`를 강제로 중지하고 제거하는 명령이다. 이 명령을 실행한 뒤 같은 볼륨을 새 컨테이너에 연결해 파일이 남아 있는지 확인했다.
 
 ```bash
 $ docker volume create mydata
@@ -427,6 +540,7 @@ hi
 - **바인드 마운트**는 **호스트의 특정 경로를 직접 지정**해서 컨테이너 내부 경로에 연결한다. 호스트 파일을 직접 수정하면 컨테이너 재시작 없이 즉시 반영됨을 §11에서 확인했다. 데이터의 실체가 호스트 파일 시스템 그 자체이므로, 컨테이너를 삭제해도 그 호스트 경로의 파일은 당연히 그대로 남는다.
 - **Docker 볼륨**은 호스트 경로를 사람이 직접 지정하지 않고, **Docker가 자체적으로 관리하는 저장 영역**에 데이터를 둔다. 컨테이너를 삭제해도 볼륨 자체는 Docker가 별도로 보관하고 있어, 새 컨테이너에 같은 볼륨을 연결하면 데이터가 유지됨을 본 섹션에서 확인했다.
 - 핵심 차이는 "삭제 후에도 데이터가 남는지" 여부가 아니라(둘 다 남는다), **데이터가 저장되는 위치를 사용자가 직접 지정하는가(바인드 마운트) 아니면 Docker가 관리하는가(볼륨)**에 있다. 바인드 마운트는 호스트와의 실시간 동기화·공유에 적합하고, 볼륨은 컨테이너 환경과 분리된 Docker 전용 데이터 저장에 적합하다.
+- 두 실습에서 `-v`의 콜론 앞에는 연결할 저장 공간을, 뒤에는 컨테이너 안에서 그 공간을 사용할 경로를 적었다. §11의 `-v "$(pwd)/site":/usr/share/nginx/html`은 현재 작업 폴더의 `site` 디렉터리를 nginx의 웹 파일 경로에 연결한다. §12의 `-v mydata:/data`는 Docker가 관리하는 `mydata` 볼륨을 컨테이너의 `/data`에 연결한다.
 
 ## 13) Git 설정
 
@@ -501,25 +615,33 @@ VSCode 계정 메뉴에 `jinho1017-eng (GitHub)` 계정이 로그인되어 있�
 
 ### 참고: 포트 충돌 진단 및 해결 절차
 
-본 프로젝트에서 실제로 포트 충돌을 겪지는 않았지만, 재현 환경에 따라 발생할 수 있어 참고용으로 기록한다.
+이 프로젝트에서는 포트 충돌을 겪지 않았다. 다른 환경에서 실습할 때 `port is already allocated` 같은 오류가 나오면 아래 순서로 확인한다.
 
-Docker 컨테이너 실행 시 `-p` 옵션의 호스트 포트가 이미 다른 프로세스에서 사용 중이면 "port is already allocated" 같은 에러가 발생한다.
+`-p 8090:80`은 내 컴퓨터의 `8090`번 포트를 컨테이너 내부의 `80`번 포트에 연결한다는 뜻이다. 이미 다른 프로그램이나 컨테이너가 내 컴퓨터의 `8090`번 포트에서 접속을 받고 있으면 같은 포트로 실행할 수 없다.
 
-1. **WSL2(Ubuntu)에서 포트 점유 프로세스 확인**
+1. **WSL Ubuntu에서 확인한다.**
+
    ```bash
-   sudo lsof -i :8090
-   # 또는
-   ss -ltnp | grep 8090
+   sudo ss -ltnp 'sport = :8090'
    ```
 
-2. **Windows(호스트)에서 확인**
+   `8090`번에서 TCP 연결을 기다리는 항목이 있으면 `Local Address:Port` 열에 해당 주소와 포트가 표시된다. `Process` 열에서 프로그램 이름이나 PID를 확인한다.
+2. **Windows에서도 확인한다.**
+
    ```powershell
-   netstat -ano | findstr :8090
+   netstat -ano | findstr ":8090"
    ```
-   마지막 열의 PID로 `tasklist /FI "PID eq <PID>"` 실행하면 어떤 프로그램인지 확인 가능.
-3. **해결 방법**
-   - 불필요한 컨테이너/프로세스라면 종료: `docker stop <컨테이너명>` 또는 `taskkill /PID <PID> /F`
-   - 또는 다른 호스트 포트로 변경해 실행: 예) `-p 8093:80`
+
+   출력에서 **로컬 주소가 `:8090`으로 끝나고 상태가 `LISTENING`인 줄**을 찾는다. 마지막 숫자가 PID이며, 실행 중인 프로그램을 구분하는 번호다. 예를 들어 PID가 `1234`라면 아래 명령으로 프로그램 이름을 확인한다.
+
+   ```powershell
+   tasklist /FI "PID eq 1234"
+   ```
+3. **확인 결과에 따라 포트를 비우거나 다른 포트를 사용한다.**
+
+   - 이전에 띄운 실습용 컨테이너가 포트를 쓰고 있다면, `docker ps`의 `PORTS` 열에서 `8090->80/tcp`가 표시된 컨테이너를 찾고 `docker stop <컨테이너명>`으로 중지한다.
+   - Windows 프로그램이 포트를 쓰고 있다면 프로그램 이름을 확인한 뒤, 종료해도 되는 프로그램은 직접 닫는다. `taskkill /F`는 프로그램을 강제로 종료하는 옵션이다.
+   - 기존 프로그램을 계속 사용해야 한다면 `-p 8093:80`처럼 **앞쪽 포트만** 바꿔 실행한다. 이 경우 브라우저에서 `http://localhost:8093`으로 접속한다. 컨테이너 내부의 nginx는 계속 `80`번 포트를 사용한다.
 
 ## 15) 재현 절차 (Reproduction)
 
@@ -539,7 +661,7 @@ curl http://localhost:8090
 ```
 
 - 바인드 마운트 재현 시 `$(pwd)` 명령은 반드시 **프로젝트 루트에서 WSL bash**로 실행해야 한다.
-- §5~§13의 실습은 이 노트북에서 **Docker Desktop(WSL Integration)** 환경으로 재현한 결과다.
+- §5~§13의 실습은 이 노트북에서 **Docker Desktop(WSL Integration)** 환경으로 재현한 결과다. §5~§8의 터미널·Docker 기본 명령 기록은 2026-11-17에 다시 실행한 것이고, §9~§12와 §18의 기록은 2026-11-03에 실행한 것이다.
 
 ## 16) 추가 실습 완료 내역
 
@@ -556,6 +678,8 @@ curl http://localhost:8090
 | 포트 매핑 2회 접속 스크린샷 재촬영                        | §10      |
 | 바인드 마운트 재검증                                      | §11      |
 | 볼륨 영속성 재검증                                        | §12      |
+| 터미널 조작·권한 재실행 | §6, §7 |
+| docker 기본 명령(run·logs·stats·it) 재실행 | §8 |
 
 ## 17) 프로젝트 구조
 
@@ -565,16 +689,38 @@ curl http://localhost:8090
 ├── docker-compose.yml
 ├── .env
 ├── README.md
+├── practice/
+│   ├── a.txt
+│   └── empty.txt
 ├── site/
 │   └── index.html
 └── docs/
+    ├── E1-1-presentation.pdf
+    ├── terminal-basic.png
+    ├── terminal-copy-move.png
+    ├── terminal-edit-delete.png
+    ├── terminal-chmod-file.png
+    ├── terminal-chmod-dir.png
+    ├── terminal-dir-x.png
+    ├── docker-version.png
+    ├── docker-hello.png
+    ├── docker-pull-images.png
+    ├── docker-ubuntu-logs.png
+    ├── docker-stats.png
+    ├── docker-stop.png
+    ├── docker-it.png
+    ├── docker-exec-stop.png
     ├── port-8090.png
     ├── port-8091.png
-    ├── vscode-github.png
     ├── bind-mount-before.png
     ├── bind-mount-after.png
-    └── compose-port-9090.png
+    ├── compose-port-9090.png
+    └── vscode-github.png
 ```
+
+저장소의 `practice/`(`a.txt`, `empty.txt`)는 최초 실습 때 올린 빈 파일이다. §6~§7에서 이번에 실행한 `~/practice`는 WSL 홈(`/home/wlsgh/practice`)의 별개 폴더이며 저장소에 포함하지 않았다.
+
+§5~§8에는 터미널에서 실행한 명령과 주요 출력을 기록했고, 실습 화면의 원본 캡처는 `docs/`에 보관했다.
 
 ## 18) 보너스 과제
 
@@ -582,7 +728,7 @@ curl http://localhost:8090
 
 ### 18-1) Docker Compose 기초
 
-`docker-compose.yml`에 두 개의 서비스를 정의했다: 아까 만든 커스텀 nginx 이미지를 쓰는 `web`과, 18-2에서 쓸 보조 컨테이너 `helper`(alpine). 이 `docker-compose.yml`은 이미지를 빌드(`build:`)하지 않고 **이미 로컬에 존재하는 이미지 이름**(`my-custom-nginx:1.0`)을 그대로 참조하는 방식이다. 따라서 새 환경에서 재현하려면 Compose를 실행하기 전에 반드시 그 이미지를 먼저 빌드해야 한다.
+`docker-compose.yml`에 두 개의 서비스를 정의했다: 앞서 만든 커스텀 nginx 이미지를 쓰는 `web`과, 18-2에서 쓸 보조 컨테이너 `helper`(alpine). 이 `docker-compose.yml`은 이미지를 빌드(`build:`)하지 않고 **이미 로컬에 존재하는 이미지 이름**(`my-custom-nginx:1.0`)을 그대로 참조하는 방식이다. 따라서 새 환경에서 재현하려면 Compose를 실행하기 전에 반드시 그 이미지를 먼저 빌드해야 한다.
 
 ```yaml
 services:
@@ -692,6 +838,8 @@ WEB_PORT=8095
 APP_ENV=dev
 ```
 
+`docker compose up -d`를 실행하면 Compose는 포트 설정의 `${WEB_PORT}` 자리에 `.env`에 적힌 값을 넣는다. 예를 들어 `WEB_PORT=8095`이면 `${WEB_PORT}:80`은 `8095:80`이 되어, 내 컴퓨터의 8095번 포트가 컨테이너 안의 80번 포트에 연결된다.
+
 `.env`의 `WEB_PORT`를 `9090`으로 바꾸고 다시 `docker compose up -d`를 실행했다. Dockerfile이나 코드는 전혀 건드리지 않았다.
 
 ```bash
@@ -707,13 +855,15 @@ compose-helper   alpine:latest         "sleep infinity"         helper    Up
 compose-web      my-custom-nginx:1.0   "/docker-entrypoint.…"   web       Up       0.0.0.0:9090->80/tcp, [::]:9090->80/tcp
 ```
 
-`docker compose ps`의 `PORTS` 란에서 `9090`으로 바뀐 것을 확인했고, 터미널 `curl`이 아니라 **브라우저로 직접 접속해서** 주소창과 응답 화면을 함께 캡처했다:
+`docker compose ps`의 `PORTS` 열에서 `9090->80/tcp`를 확인했다. 이어서 브라우저로 `http://localhost:9090`에 접속해 주소창과 웹페이지를 함께 캡처했다.
 
 ![Compose 환경변수로 변경된 포트 접속](./docs/compose-port-9090.png)
 
-`.env` 파일 하나만 바꿨는데 서비스에 접속하는 포트가 `8095`에서 `9090`으로 바뀌었다. 이때 바뀐 것은 **호스트(이 노트북)에 공개되는 포트**이고, `docker-compose.yml`의 `"${WEB_PORT}:80"`에서 뒤쪽 `80`(컨테이너 내부에서 nginx가 듣는 포트)은 그대로다 — 즉 컨테이너 내부 설정이 아니라 "호스트와 컨테이너를 연결하는 입구"만 설정값으로 바뀐 것이다. 이것이 "설정(config)과 코드(code)의 분리" — 실행 환경에 따라 달라져야 하는 값(포트, 모드 등)을 코드에 하드코딩하지 않고 외부 설정 파일로 분리해 관리하는 방식이다.
+`WEB_PORT`를 `8095`에서 `9090`으로 바꾸자 내 컴퓨터에서 접속하는 포트가 `9090`으로 바뀌었고, 컨테이너 안의 nginx는 계속 `80`번 포트를 사용했다. 접속 포트가 겹치거나 환경마다 다른 포트가 필요할 때 이렇게 설정값만 바꿔 같은 웹 서버 이미지를 사용할 수 있다. 이것이 이 실습에서 확인한 설정과 코드의 분리다.
 
 ### 18-5) GitHub SSH 키 설정
+
+GitHub 저장소에 SSH 키로 연결하는 방법을 익히기 위해 별도의 SSH 원격 주소인 `origin-ssh`를 추가했다. 공개키를 GitHub에 등록하면 이후 SSH 주소로 `git pull`이나 `git push`를 할 때 내 컴퓨터에 보관한 개인키로 인증할 수 있다. 키를 한 번 설정해 두고 같은 터미널 환경에서 반복해서 사용할 수 있다는 점이 편리하다.
 
 ```bash
 $ ssh-keygen -t ed25519 -C "jinhog177@g***.com" -f ~/.ssh/codyssey_key
@@ -749,6 +899,7 @@ Everything up-to-date
 ## 19) 참고
 
 - 모든 작업은 WSL2(Ubuntu) 터미널 기반 CLI로 수행했다.
-- 브라우저 접속 스크린샷과 VSCode-GitHub 연동 스크린샷은 `docs/` 폴더에 포함되어 있다.
+- 터미널·Docker 실행 화면, 브라우저 접속, VSCode-GitHub 연동 스크린샷은 `docs/` 폴더에 포함되어 있다.
 - 보너스 과제(Docker Compose 기초/멀티 컨테이너/운영 명령어, 환경변수 활용, GitHub SSH 키 설정)는 §18에 모두 포함했다.
 - `site/index.html`에서 바인드 마운트 테스트로 추가된 `<p>` 태그들이 `</html>` 뒤에 위치해 있던 구조적 오류를 `<body>` 내부로 옮겨 수정했다. 브라우저는 원래도 자동으로 보정해서 보여줬기 때문에 §10·§11의 스크린샷에 보이는 화면 자체는 이 수정 전후로 동일하다.
+- 발표 자료는 [docs/E1-1-presentation.pdf](./docs/E1-1-presentation.pdf)에 있다.
