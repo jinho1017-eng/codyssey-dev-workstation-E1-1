@@ -37,7 +37,7 @@
 - Git: 2.53.0
 - 터미널 애플리케이션: **Ubuntu 앱(Microsoft Store 배포판 전용 터미널)**
 
-> **환경 확정**: §6~§13의 재현 실습 로그는 Windows 노트북에서 **Docker Desktop(WSL2 Integration)** 을 통해 Ubuntu WSL 배포판의 `docker` CLI로 수행한 결과다. WSL2를 활성화하고(`wsl --install`), Docker Desktop을 D드라이브에 설치한 뒤(`--installation-dir=D:\Docker --wsl-default-data-root=D:\DockerData`), Ubuntu 배포판을 기본값으로 지정(`wsl --set-default Ubuntu`)하고 Docker Desktop 설정에서 WSL Integration을 켜서 연동했다. §5의 `docker info` 출력에서 `Operating System: Docker Desktop`, `Name: docker-desktop`이 확인되어, Ubuntu 터미널이 Docker Desktop 서버에 연결됐음을 알 수 있다. 최초 README의 "Docker Engine - Community" 표기는 다른(클라우드) 환경에서의 기록이며, 본 재현 작업과는 별개 환경이다.
+> **환경 확정**: §5~§13의 재현 실습 로그는 Windows 노트북에서 **Docker Desktop(WSL2 Integration)** 을 통해 Ubuntu WSL 배포판의 `docker` CLI로 수행한 결과다. WSL2를 활성화하고(`wsl --install`), Docker Desktop을 D드라이브에 설치한 뒤(`--installation-dir=D:\Docker --wsl-default-data-root=D:\DockerData`), Ubuntu 배포판을 기본값으로 지정(`wsl --set-default Ubuntu`)하고 Docker Desktop 설정에서 WSL Integration을 켜서 연동했다. §5의 `docker info` 출력에서 `Operating System: Docker Desktop`, `Name: docker-desktop`이 확인되어, Ubuntu 터미널이 Docker Desktop 서버에 연결됐음을 알 수 있다. 최초 README의 "Docker Engine - Community" 표기는 다른(클라우드) 환경에서의 기록이며, 본 재현 작업과는 별개 환경이다.
 
 ## 3) 수행 체크리스트
 
